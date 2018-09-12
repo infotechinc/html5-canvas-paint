@@ -10,6 +10,7 @@
     <script src="../node_modules/wct-browser-legacy/browser.js"></script>
 
     <script type="module" src="../paint-practice.js"></script>
+    <script src='../demo/fabric.js'></script>
   </head>
   <body>
 
@@ -28,7 +29,7 @@
     <script type="module">
       suite('paint-practice', () => {
 
-        test('instantiating the element with default properties works', () => {
+        test.skip('instantiating the element with default properties works', () => {
           const element = fixture('BasicTestFixture');
           assert.equal(element.prop1, 'paint-practice');
           const elementShadowRoot = element.shadowRoot;
@@ -36,7 +37,7 @@
           assert.equal(elementHeader.innerHTML, 'Hello paint-practice!');
         });
 
-        test('setting a property on the element works', () => {
+        test.skip('setting a property on the element works', () => {
           // Create a test fixture
           const element = fixture('ChangedPropertyTestFixture');
           assert.equal(element.prop1, 'new-prop1');
@@ -44,6 +45,30 @@
           const elementHeader = elementShadowRoot.querySelector('h2');
           assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
         });
+
+
+        test('setting a property on the element works', () => {
+          debugger;
+          const el = fixture('BasicTestFixture');
+          const shadow = el.shadowRoot;
+
+          //arrange
+          el.addSquare();
+          assert.equal(el.canvas.size(), 1);
+
+          const deleteBtn = shadow.querySelector('#delete');
+
+          //act
+          deleteBtn.click();
+
+          //assert
+
+          assert.equal(el.canvas.size(), 0);
+
+
+
+        });
+
 
       });
     </script>

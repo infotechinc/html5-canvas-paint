@@ -14,11 +14,14 @@ class PaintPractice extends PolymerElement {
       // <canvas id = "canvas"> </canvas>
  
   static get template() {
+    //style="border:3px solid purple
     return html`
      
         <sp> Canvas </sp>
        
-       <canvas id="myCanvas" width="500" height="500" style="border:3px solid purple"  >
+       <canvas id="myCanvas" ></canvas>
+       <button on-click = "addSquare"> Create Square </button>
+       <button id="delete" on-click = "deleteSquare"> Delete Square </button>
 
      
     `;
@@ -36,22 +39,35 @@ class PaintPractice extends PolymerElement {
     super.ready();
     console.log(fabric);
     //shadow selector query
-    this.canvas = new fabric.Canvas('canvas', {width: 500, height: 500});
+    
+    const canvas = this.shadowRoot.querySelector('canvas');
+   // const button = this.shadowRoot.querySelector('button');
+
+    this.canvas = new fabric.Canvas(canvas, {width: 500, height: 500});
+
+  
+    this.canvas.renderAll();
 
 
+  }
 
-    var square = new fabric.Rect({
+  addSquare(){
+
+    const square = new fabric.Rect({
         top: 100,
         left: 100,
         width: 50,
         height: 50,
-        fill: 'red',
+        fill: 'purple',
     });
 
     this.canvas.add(square);
     this.canvas.renderAll();
     console.log(this.canvas.size());
+  }
 
+  deleteSquare(){
+    // this.canvas.Delete(square)
 
   }
 
