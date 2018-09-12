@@ -17,10 +17,11 @@ class PaintPractice extends PolymerElement {
     //style="border:3px solid purple
     return html`
      
-        <sp> Canvas </sp>
+        
        
-       <canvas id="myCanvas" ></canvas>
-       <button on-click = "addSquare"> Create Square </button>
+       <canvas id="myCanvas" style="border:3px solid purple";></canvas>
+       <sp> Choose Option: <bl></sp>
+       <button on-click = "addSquare" > Create Square </button>
        <button id="delete" on-click = "deleteSquare"> Delete Square </button>
 
      
@@ -34,7 +35,7 @@ class PaintPractice extends PolymerElement {
       }
     };
   }
-//this method is not working, canvas is created in template, I deleted this entire method and it didnt effect anything
+
   ready(){
     super.ready();
     console.log(fabric);
@@ -58,7 +59,7 @@ class PaintPractice extends PolymerElement {
         left: 100,
         width: 50,
         height: 50,
-        fill: 'purple',
+        fill: ' #9999ff',
     });
 
     this.canvas.add(square);
@@ -69,7 +70,7 @@ class PaintPractice extends PolymerElement {
   deleteSquare(){
     const context = this.canvas.getContext("2d");
     if( this.canvas.getActiveObject() == null){
-      window.alert("Please select shape you wish to delete.\n A shape must be created in order to delete. (duh)");
+      window.alert("Please select shape you wish to delete.\n A shape must be created in order to delete.");
     }
     this.canvas.remove(this.canvas.getActiveObject());
 
