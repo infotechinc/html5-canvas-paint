@@ -46,9 +46,9 @@
           assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
         });
 
-        test('setting a property on the element works', () => {
-          debugger;
+        test('adding a square to the canvas', () => {
           const el = fixture('BasicTestFixture');
+          const alertStub = sinon.stub(window, 'alert').returns(true);
           const shadow = el.shadowRoot;
           //arrange
           const numSquares = el.canvas.size();
@@ -56,25 +56,23 @@
           const addBtn = shadow.querySelector('#addSquare');
           //act
           addBtn.click();
-          //asser
-          assert.equal(numSquares,el.canvas.size()+1 )
+          //assert
+          assert.equal(el.canvas.size(), numSquares+1);
+        });
 
-
-        }
-
-        test('setting a property on the element works', () => {
-          debugger;
+        test('deleting a square from the canvas', () => {
           const el = fixture('BasicTestFixture');
           const shadow = el.shadowRoot;
           //arrange
           const num = el.canvas.size();
+          assert(num==0);
           el.addSquare();
           const deleteBtn = shadow.querySelector('#delete');
+          assert(el.canvas.size()==1);
           //act
           deleteBtn.click();
          //assert
-          assert.equal(num, el.canvas.size()-1);
-
+          assert.equal(el.canvas.size(), num);
         });
 
 
