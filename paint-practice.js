@@ -29,9 +29,21 @@ class PaintPractice extends PolymerElement {
   }
   static get properties() {
     return {
-      prop1: {
+      square: {
+        type: Object,
+        value: ()=>{
+          return { 
+            top: 100,
+            left: 100,
+            width: 50,
+            height: 50,
+            fill: ' #9999ff',
+          }
+        }
+      },
+      selectedTool: {
         type: String,
-        value: 'Create A Square',
+        value: 'square'
       }
     };
   }
@@ -53,15 +65,7 @@ class PaintPractice extends PolymerElement {
   }
 
   addSquare(){
-
-    const square = new fabric.Rect({
-        top: 100,
-        left: 100,
-        width: 50,
-        height: 50,
-        fill: ' #9999ff',
-    });
-
+    const square = new fabric.Rect(this.square);
     this.canvas.add(square);
     this.canvas.renderAll();
     console.log(this.canvas.size());
