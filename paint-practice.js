@@ -67,7 +67,11 @@ class PaintPractice extends PolymerElement {
   }
 
   deleteSquare(){
-    // this.canvas.Delete(square)
+    const context = this.canvas.getContext("2d");
+    if( this.canvas.getActiveObject() == null){
+      window.alert("Please select shape you wish to delete.\n A shape must be created in order to delete. (duh)");
+    }
+    this.canvas.remove(this.canvas.getActiveObject());
 
   }
 
