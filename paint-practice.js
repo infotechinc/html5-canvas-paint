@@ -29,7 +29,7 @@ class PaintPractice extends PolymerElement {
   }
   static get properties() {
     return {
-      square: {
+      rectangle: {
         type: Object,
         value: ()=>{
           return { 
@@ -41,12 +41,14 @@ class PaintPractice extends PolymerElement {
           }
         }
       },
-      selectedTool: {
+      selectedShape: {
         type: String,
-        value: 'square'
+        value: 'rectangle'
       }
     };
   }
+
+ 
 
   ready(){
     super.ready();
@@ -57,16 +59,27 @@ class PaintPractice extends PolymerElement {
    // const button = this.shadowRoot.querySelector('button');
 
     this.canvas = new fabric.Canvas(canvas, {width: 500, height: 500});
-
-  
+    
+    canvas.addEventListener('mouse:down', mouseDown(options));
     this.canvas.renderAll();
-
+ 
 
   }
+  canvas.onmousedown = function (e) {
+    // React to the mouse down event
+};
+   //mouseDown(options){
+    //pointer is name of flag for x & y coordinates, 'e' specifies original event info
+   // const pointer = this.canvas.getPointer(options.e);
+    //why so many this
+   //  shape = this[this.selectedShape];
+   // console.log(TEST);
+    }
 
+  
   addSquare(){
-    const square = new fabric.Rect(this.square);
-    this.canvas.add(square);
+    const rect = new fabric.Rect(this.rectangle);
+    this.canvas.add(rect);
     this.canvas.renderAll();
     console.log(this.canvas.size());
   }
@@ -79,7 +92,7 @@ class PaintPractice extends PolymerElement {
     this.canvas.remove(this.canvas.getActiveObject());
 
   }
-
+  
 
 }
 
