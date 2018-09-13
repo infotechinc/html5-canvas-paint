@@ -64,17 +64,22 @@ class PaintPractice extends PolymerElement {
   }
 
   initCanvasListeners(){
-    this.canvas.on(‘mouse:down’, this.mouseDown);
-    this.canvas.on(‘mouse:move’, this.mouseMove)
-    this.canvas.on(‘mouse:up’, this.mouseUp);
+    this.canvas.on('mouse:down', this.mouseDown);
+    this.canvas.on('mouse:move', this.mouseMove);
+    this.canvas.on('mouse:up', this.moveHandler);
   }
 
   mouseDown(e){
+    var e = e;
     //pointer is name of flag for x & y coordinates, 'e' specifies original event info
+    
     const pointer = this.canvas.getPointer(e);
+
+    const posX = e.x;
+    const posY = e.y
     //why so many this
-    shape = this[this.selectedShape];
-    console.log(TEST);
+   // shape = this[this.selectedShape];
+    console.log('TEST');
   }
 
   mouseMove(e){
