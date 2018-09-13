@@ -56,25 +56,33 @@ class PaintPractice extends PolymerElement {
     //shadow selector query
     
     const canvas = this.shadowRoot.querySelector('canvas');
-   // const button = this.shadowRoot.querySelector('button');
-
+   
     this.canvas = new fabric.Canvas(canvas, {width: 500, height: 500});
-    
-    canvas.addEventListener('mouse:down', mouseDown(options));
     this.canvas.renderAll();
- 
+    
+    this.initCanvasListeners();
+  }
+
+  initCanvasListeners(){
+    this.canvas.on(‘mouse:down’, this.mouseDown);
+    this.canvas.on(‘mouse:move’, this.mouseMove)
+    this.canvas.on(‘mouse:up’, this.mouseUp);
+  }
+
+  mouseDown(e){
+    //pointer is name of flag for x & y coordinates, 'e' specifies original event info
+    const pointer = this.canvas.getPointer(e);
+    //why so many this
+    shape = this[this.selectedShape];
+    console.log(TEST);
+  }
+
+  mouseMove(e){
 
   }
-  canvas.onmousedown = function (e) {
-    // React to the mouse down event
-};
-   //mouseDown(options){
-    //pointer is name of flag for x & y coordinates, 'e' specifies original event info
-   // const pointer = this.canvas.getPointer(options.e);
-    //why so many this
-   //  shape = this[this.selectedShape];
-   // console.log(TEST);
-    }
+  mouseUp(e){
+
+  }
 
   
   addSquare(){
