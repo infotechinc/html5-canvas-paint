@@ -73,8 +73,8 @@ class PaintPractice extends PolymerElement {
   mouseDown(e){
     this.mouseDown = true;
 
-    this.canvas.selection= false;
-    var e = e;
+    this.canvas.selection= true;
+    var k = k;
     //pointer is name of flag for x & y coordinates, 'e' specifies original event info
     const pointer = this.canvas.getPointer(e.e);
 
