@@ -45,6 +45,7 @@ class PaintPractice extends PolymerElement {
         type: String,
         value: 'rectangle'
       }
+
     };
   }
 
@@ -70,7 +71,9 @@ class PaintPractice extends PolymerElement {
   }
 
   mouseDown(e){
-    console
+    this.mouseDown = true;
+
+    this.canvas.selection= false;
     var e = e;
     //pointer is name of flag for x & y coordinates, 'e' specifies original event info
     const pointer = this.canvas.getPointer(e.e);
@@ -78,33 +81,50 @@ class PaintPractice extends PolymerElement {
     const posX = pointer.x;
     const posY = pointer.y;
 
+    const toConstruct = this[this.selectedShape];
     //why so many this
-    const shape = this[this.selectedShape];
-     shape.left = posX;
-     shape.right = posY;
-     
+    const shape = new fabric.Rect(toConstruct);
+    shape.left = posX;
+    shape.top = posY;
+    this.shape = shape;
+
     this.canvas.add(shape);
     this.downX = shape.left;
-    this.downY = shape.right;
-   
+    this.downY = shape.top;
     
-    const mouseDown = true;
-    
+
   }
 
   mouseMove(e){
-
     if(this.mouseDown != true){
       return;
     }
 
+    const pointer = this.canvas.getPointer(e.e);
+
+
     const posX = pointer.x;
     const posY = pointer.y;
+
+    const shape = this.canvas.getActiveObject();
     
-    this.shape.width = (Math.abs(pointer.x - this.downX));
-    this.shape.height = (Math.abs(pointer.y -this.downY));
+    const width = (Math.abs(pointer.x - this.downX));
+    const height = (Math.abs(pointer.y -this.downY));
+
+    // this.shape.width +=3;
+    // this.shape.height +=3
+
+    // this.shape.width +=3;
+
+
+    // // this.shape.set()
+
+    this.shape.set({width: width, height: height})
+
+    this.shape.setCoords();
+
     this.canvas.renderAll();
-    console.log(this.canvas.size());
+    //console.log(this.canvas.size());
   }
 
   mouseUp(e){
