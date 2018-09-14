@@ -70,6 +70,7 @@ class PaintPractice extends PolymerElement {
   }
 
   mouseDown(e){
+    console
     var e = e;
     //pointer is name of flag for x & y coordinates, 'e' specifies original event info
     const pointer = this.canvas.getPointer(e.e);
@@ -83,16 +84,31 @@ class PaintPractice extends PolymerElement {
      shape.right = posY;
      
     this.canvas.add(shape);
-    this.canvas.renderAll();
+    this.downX = shape.left;
+    this.downY = shape.right;
+   
     
-    //console.log(this.canvas.size());
+    const mouseDown = true;
+    
   }
 
   mouseMove(e){
 
-  }
-  mouseUp(e){
+    if(this.mouseDown != true){
+      return;
+    }
 
+    const posX = pointer.x;
+    const posY = pointer.y;
+    
+    this.shape.width = (Math.abs(pointer.x - this.downX));
+    this.shape.height = (Math.abs(pointer.y -this.downY));
+    this.canvas.renderAll();
+    console.log(this.canvas.size());
+  }
+
+  mouseUp(e){
+    this.mouseDown = false;
   }
 
   
