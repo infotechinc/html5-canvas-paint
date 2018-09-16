@@ -106,16 +106,25 @@ class PaintPractice extends PolymerElement {
     const pointer = this.canvas.getPointer(e.e);
 
 
-    const posX = pointer.x;
-    const posY = pointer.y;
-
     const shape = this.canvas.getActiveObject();
-    
+    if(this.shape.left > pointer.x ){
+      console.log("this.shape.left");
+      console.log(this.shape.left);
+      console.log("\n");
+      console.log("pointer.x");
+      console.log(pointer.x);
+      this.shape.left = pointer.x;
+    }
+    if(this.shape.top >pointer.y){
+      
+
+      this.shape.top = pointer.y;
+    }
     const width = (Math.abs(pointer.x - this.downX));
     const height = (Math.abs(pointer.y -this.downY));
 
 
-    this.shape.set({width: width, height: height})
+    this.shape.set({width: width, height: height});
 
     this.shape.setCoords();
 

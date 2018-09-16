@@ -4,7 +4,6 @@
   "main": "paint-practice.js",
   "dependencies": {
     "@polymer/polymer": "^3.0.0",
-    "fabric": "^2.3.6"
   },
   "devDependencies": {
     "@polymer/iron-demo-helpers": "^3.0.0-pre.19",
