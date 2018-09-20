@@ -3,6 +3,7 @@
   "description": "practice using making a shape and button with fabric.js",
   "main": "paint-practice.js",
   "dependencies": {
+    "@polymer/iron-icons": "^3.0.1",
     "@polymer/polymer": "^3.0.0"
   },
   "devDependencies": {

@@ -1,30 +1,26 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
-
-
+import '@polymer/iron-icon/iron-icon.js';
+import '@polymer/iron-icons/iron-icons.js';
 /**
  * `paint-practice`
- * practice using making a shape and button with fabric.js
  *
  * @customElement
  * @polymer
  * @demo demo/index.html
  */
 class PaintPractice extends PolymerElement {
-  
-      // <canvas id = "canvas"> </canvas>
- 
   static get template() {
-    //style="border:3px solid purple
     return html`
-     
-        
-       
+       <body onload = "initCanvasListeners()">
        <canvas id="myCanvas" style="border:3px solid purple";></canvas>
        <sp> Choose Option: <bl></sp>
        <button on-click = "addSquare" > Create Square </button>
-       <button id="delete" on-click = "deleteSquare"> Delete Square </button>
-
-     
+       <button id="delete" on-click = "deleteSquare"> Delete Square </button> 
+       <div class = "icon-bar" style = "background-color: #555">
+          <a class="active" href="#"  on-click= "rectSelector"><iron-icon hover = "background-color: #000" style = " color: white" icon = "check-box-outline-blank" name="rectSel"></iron-icon></a>
+          <a href="#" on-click= "arrowSelector">  <iron-icon style = "color: white" icon = "arrow-forward" name="arrowSel"></iron-icon> </a>
+       </div>
+       
     `;
   }
   static get properties() {
@@ -41,71 +37,80 @@ class PaintPractice extends PolymerElement {
           }
         }
       },
+      arrow:{
+        type: Object,
+        value: ()=>{
+          return{
+            top: 100,
+            left:100,
+            width: 50,
+            height: 50,
+            fill: ' #9999ff',
+          }
+        }
+      },
       selectedShape: {
         type: String,
         value: 'rectangle'
       }
-
     };
   }
-
- 
-
   ready(){
     super.ready();
     console.log(fabric);
-    //shadow selector query
-    
     const canvas = this.shadowRoot.querySelector('canvas');
-   
+    const iconRect = this.shadowRoot.querySelector('#rectSel');
+    const iconArrow = this.shadowRoot.querySelector('#arrowSel');
     this.canvas = new fabric.Canvas(canvas, {width: 500, height: 500});
-    this.canvas.renderAll();
-    
+    this.canvas.renderAll();  
     this.initCanvasListeners();
   }
-
   initCanvasListeners(){
     this.canvas.on('mouse:down', this.mouseDown.bind(this));
     this.canvas.on('mouse:move', this.mouseMove.bind(this));
     this.canvas.on('mouse:up', this.mouseUp.bind(this));
+    document.body.addEventListener('keydown', this.deleteListener.bind(this), false);
   }
-
+ 
+  rectSelector(){
+    console.log('rectangle selected');
+     const toConstruct = this[this.selectedShape];
+     toConstruct.value = 'rectangle';
+     const shape = new fabric.Rect(toConstruct);
+  }
+  arrowSelector(){
+     const toConstruct = this[this.selectedShape];
+     toConstruct.value = 'arrow';
+     const shape = new fabric.Rect(toConstruct); 
+  }
+  deleteListener(e){
+    const key = e.keyCode;
+    if(key == '8'){
+      this.canvas.remove(this.canvas.getActiveObject());
+    }
+     console.log(key);
+     {detail: 'delete'};
+   }
   mouseDown(e){
     this.mouseDown = true;
-
-
-    console.log('bar');
     var s = e;
-
-   
-
-    //pointer is name of flag for x & y coordinates, 'e' specifies original event info
     const pointer = this.canvas.getPointer(e.e);
-
     const posX = pointer.x;
     const posY = pointer.y;
-
     const toConstruct = this[this.selectedShape];
-    //why so many this
     const shape = new fabric.Rect(toConstruct);
     shape.left = posX;
     shape.top = posY;
     this.shape = shape;
-
     this.canvas.add(shape);
     this.downX = shape.left;
     this.downY = shape.top;
-
   }
-
   mouseMove(e){
     if(this.mouseDown != true){
-      return;
+    return;
     }
-
     const pointer = this.canvas.getPointer(e.e);
-
-
     const shape = this.canvas.getActiveObject();
     if(this.shape.left > pointer.x ){
       console.log("this.shape.left");
@@ -115,45 +120,30 @@ class PaintPractice extends PolymerElement {
       console.log(pointer.x);
       this.shape.left = pointer.x;
     }
-    if(this.shape.top >pointer.y){
-      
-
+    if(this.shape.top >pointer.y){  
       this.shape.top = pointer.y;
     }
     const width = (Math.abs(pointer.x - this.downX));
     const height = (Math.abs(pointer.y -this.downY));
-
-
     this.shape.set({width: width, height: height});
-
     this.shape.setCoords();
-
     this.canvas.renderAll();
-    //console.log(this.canvas.size());
   }
-
   mouseUp(e){
     this.mouseDown = false;
   }
-
-  
   addSquare(){
     const rect = new fabric.Rect(this.rectangle);
     this.canvas.add(rect);
     this.canvas.renderAll();
     console.log(this.canvas.size());
   }
-
   deleteSquare(){
     const context = this.canvas.getContext("2d");
     if( this.canvas.getActiveObject() == null){
       window.alert("Please select shape you wish to delete.\n A shape must be created in order to delete.");
     }
     this.canvas.remove(this.canvas.getActiveObject());
-
   }
-  
-
 }
-
 window.customElements.define('paint-practice', PaintPractice);
