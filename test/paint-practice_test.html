@@ -75,6 +75,32 @@
           assert.equal(el.canvas.size(), num);
         });
 
+         test('deleting from delete key listener', () => {
+          const el = fixture('BasicTestFixture');
+          const shadow = el.shadowRoot;
+          //arrange
+          const num = el.canvas.size();
+          assert(num==0);
+          el.addSquare();
+          assert(el.canvas.size()==1);
+
+          el.on('keydown', function(event){
+            assert.equal(event.detail, 'delete');
+          });
+          assert.equal(el.canvas.size(), num);
+          assert.equal(el.canvas.size(), num);
+        });
+
+        test('add an arrow to canvas'), ()=> {
+          const el = fixture('BasicTestFixture');
+          const shadow = el.shadowRoot;
+          const num = el.canvas.size;
+          assert(num == 0);
+          const arrowIcon = shadow.querySelector('#arrowSel');
+          arrowIcon.click();
+          const activeObj = el.canvas.getActiveObject();
+          assert(activeObj.value, 'arrow');
+        }
 
       });
     </script>
