@@ -47,6 +47,7 @@ class PaintPractice extends PolymerElement {
             width: 50,
             height: 50,
             fill: ' #9999ff',
+            path: 'M0 0 L100.1 0 M 100 0 L75 20 M100 0 L75 -20'
           }
         }
       },
@@ -77,7 +78,6 @@ class PaintPractice extends PolymerElement {
   toggle(){
     this.canvas.selection = false;
     this.canvas.off('mouse:down');
-
   }
 
   rectSelector(){
@@ -97,9 +97,15 @@ class PaintPractice extends PolymerElement {
      this.canvas.selection = true;
      const toConstruct = this[this.selectedShape];
      this.selectedShape = 'arrow';
-     const shape = new fabric.Rect(toConstruct);
-     
-    
+     const path = new fabric.Path('M0 0 L100.1 0 M 100 0 L75 20 M100 0 L75 -20', {
+      left: 100,
+    top: 100,
+    stroke: 'red',
+    strokeWidth: 1,
+    fill: false
+     });
+     this.canvas.add(path);
+    this.canvas.renderAll();
   }
   deleteListener(e){
     const key = e.keyCode;
