@@ -46,61 +46,78 @@
           assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
         });
 
-        test('adding a square to the canvas', () => {
+        test('adding a square to the canvas', (done) => {
           const el = fixture('BasicTestFixture');
           const alertStub = sinon.stub(window, 'alert').returns(true);
           const shadow = el.shadowRoot;
           //arrange
           const numSquares = el.canvas.size();
-          el.addSquare();
-          const addBtn = shadow.querySelector('#addSquare');
+       
+          const addBtn = shadow.querySelector('#add');
           //act
+          const addSquareSpy = sinon.spy(el, 'addSquare');
           addBtn.click();
+          // el.addEventListener('addSquare', ()=>{
+          // setTimeout(1000, function(){
+            sinon.assert.calledOnce(addSquareSpy);
+            assert.equal(el.canvas.size(), numSquares+1);
+            done();
+
+            
+          // });
+          // });
           //assert
-          assert.equal(el.canvas.size(), numSquares+1);
         });
 
-        test('deleting a square from the canvas', () => {
+        test('deleting a square from the canvas', (done) => {
           const el = fixture('BasicTestFixture');
           const shadow = el.shadowRoot;
           //arrange
-          const num = el.canvas.size();
-          assert(num==0);
+          assert(el.canvas.size()==0);
           el.addSquare();
           const deleteBtn = shadow.querySelector('#delete');
           assert(el.canvas.size()==1);
           //act
+          const deleteSquareSpy = sinon.spy(el, 'deleteSquare');
           deleteBtn.click();
+          // debugger;
+          sinon.assert.calledOnce(deleteSquareSpy);
+          assert.equal(el.canvas.size(), 0);
+          done();
          //assert
-          assert.equal(el.canvas.size(), num);
         });
 
          test('deleting from delete key listener', () => {
           const el = fixture('BasicTestFixture');
           const shadow = el.shadowRoot;
-          //arrange
+         // arrange
           const num = el.canvas.size();
           assert(num==0);
           el.addSquare();
           assert(el.canvas.size()==1);
 
-          el.on('keydown', function(event){
-            assert.equal(event.detail, 'delete');
+          el.canvas.on('keydown', function(event){
+          assert.equal(event.detail, 'delete');
+          assert.equal(el.canvas.size(), num);
           });
-          assert.equal(el.canvas.size(), num);
-          assert.equal(el.canvas.size(), num);
+
+          el.canvas.fire();
+
         });
 
-        test('add an arrow to canvas'), ()=> {
+        test('add an arrow to canvas', ()=> {
           const el = fixture('BasicTestFixture');
           const shadow = el.shadowRoot;
-          const num = el.canvas.size;
-          assert(num == 0);
-          const arrowIcon = shadow.querySelector('#arrowSel');
-          arrowIcon.click();
+          assert(el.canvas.size() == 0);
+
+          const arrowClickIcon = shadow.querySelector('#arrowSel');
+          const addArrowSpy = sinon.spy(el, 'arrowSelector');
+          arrowClickIcon.click();
+
+          sinon.assert.calledOnce(addArrowSpy);
           const activeObj = el.canvas.getActiveObject();
           assert(activeObj.value, 'arrow');
-        }
+        });
 
       });
     </script>
