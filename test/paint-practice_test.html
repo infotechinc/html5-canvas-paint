@@ -115,8 +115,9 @@
           arrowClickIcon.click();
 
           sinon.assert.calledOnce(addArrowSpy);
+          //issue is that activeObj is currently undefined
           const activeObj = el.canvas.getActiveObject();
-          assert(activeObj.value, 'arrow');
+          assert(activeObj == 'arrow');
         });
 
       });

@@ -14,11 +14,12 @@ class PaintPractice extends PolymerElement {
        <body onload = "initCanvasListeners()">
        <canvas id="myCanvas" style="border:3px solid purple";></canvas>
        <sp> Choose Option: <bl></sp>
-       <button on-click = "addSquare" > Create Square </button>
+       <button id = "add" on-click = "addSquare" > Create Square </button>
        <button id="delete" on-click = "deleteSquare"> Delete Square </button> 
        <div class = "icon-bar" style = "background-color: #555">
-          <a class="active" href="#"  on-click= "rectSelector"><iron-icon hover = "background-color: #000" style = " color: white" icon = "check-box-outline-blank" name="rectSel"></iron-icon></a>
-          <a href="#" on-click= "arrowSelector">  <iron-icon style = "color: white" icon = "arrow-forward" name="arrowSel"></iron-icon> </a>
+          <a class="active" href="#" id="rectSel" on-click= "rectSelector"><iron-icon hover = "background-color: #000" style = " color: white" icon = "check-box-outline-blank" ></iron-icon></a>
+          <a href="#" id="arrowSel" on-click= "arrowSelector">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
+          <a href="#" on-click= "toggle">  <iron-icon style = "color: white" icon = "swap-horiz" name="toggleSel"></iron-icon> </a>
        </div>
        
     `;
@@ -65,23 +66,40 @@ class PaintPractice extends PolymerElement {
     this.canvas.renderAll();  
     this.initCanvasListeners();
   }
+
   initCanvasListeners(){
     this.canvas.on('mouse:down', this.mouseDown.bind(this));
     this.canvas.on('mouse:move', this.mouseMove.bind(this));
     this.canvas.on('mouse:up', this.mouseUp.bind(this));
     document.body.addEventListener('keydown', this.deleteListener.bind(this), false);
   }
- 
+
+  toggle(){
+    this.canvas.selection = false;
+    this.canvas.off('mouse:down');
+
+  }
+
   rectSelector(){
-    console.log('rectangle selected');
+    // document.body.addEventListener("click", this.initCanvasListeners.bind());
+     //this.canvas.on('mouse:down', this.initCanvasListeners.bind());
+    // this.canvas.onmousedown = function(){
+     // initCanvasListeners();
+    // }
+     //this.canvas.on('mouse:down', this.ready);
+     this.canvas.selection = true;
      const toConstruct = this[this.selectedShape];
-     toConstruct.value = 'rectangle';
-     const shape = new fabric.Rect(toConstruct);
+     this.selectedShape = 'rectangle';
+     
+     this.canvas.renderAll();
   }
   arrowSelector(){
+     this.canvas.selection = true;
      const toConstruct = this[this.selectedShape];
-     toConstruct.value = 'arrow';
-     const shape = new fabric.Rect(toConstruct); 
+     this.selectedShape = 'arrow';
+     const shape = new fabric.Rect(toConstruct);
+     
+    
   }
   deleteListener(e){
     const key = e.keyCode;
@@ -117,8 +135,7 @@ class PaintPractice extends PolymerElement {
       console.log(this.shape.left);
       console.log("\n");
       console.log("pointer.x");
-      console.log(pointer.x);
-      this.shape.left = pointer.x;
+      console.log(pointer.x);      this.shape.left = pointer.x;
     }
     if(this.shape.top >pointer.y){  
       this.shape.top = pointer.y;
@@ -132,7 +149,8 @@ class PaintPractice extends PolymerElement {
   mouseUp(e){
     this.mouseDown = false;
   }
-  addSquare(){
+  addSquare(e){
+    console.log('event',e);
     const rect = new fabric.Rect(this.rectangle);
     this.canvas.add(rect);
     this.canvas.renderAll();
