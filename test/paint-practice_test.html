@@ -57,16 +57,11 @@
           //act
           const addSquareSpy = sinon.spy(el, 'addSquare');
           addBtn.click();
-          // el.addEventListener('addSquare', ()=>{
-          // setTimeout(1000, function(){
-            sinon.assert.calledOnce(addSquareSpy);
-            assert.equal(el.canvas.size(), numSquares+1);
-            done();
-
-            
-          // });
-          // });
           //assert
+          sinon.assert.calledOnce(addSquareSpy);
+          assert.equal(el.canvas.size(), numSquares+1);
+          done();
+
         });
 
         test('deleting a square from the canvas', (done) => {
@@ -79,47 +74,103 @@
           assert(el.canvas.size()==1);
           //act
           const deleteSquareSpy = sinon.spy(el, 'deleteSquare');
+          el.canvas;
           deleteBtn.click();
-          // debugger;
+          //assert
           sinon.assert.calledOnce(deleteSquareSpy);
           assert.equal(el.canvas.size(), 0);
           done();
-         //assert
+         
         });
 
          test('deleting from delete key listener', () => {
           const el = fixture('BasicTestFixture');
           const shadow = el.shadowRoot;
-         // arrange
+          // arrange
           const num = el.canvas.size();
           assert(num==0);
           el.addSquare();
           assert(el.canvas.size()==1);
 
+          const dltKeySpy = sinon.spy(el, 'deleteListener');
           el.canvas.on('keydown', function(event){
           assert.equal(event.detail, 'delete');
           assert.equal(el.canvas.size(), num);
+          sinon.assert.calledOnce(dltKeySpy);
           });
-
+          
           el.canvas.fire();
 
         });
 
-        test('add an arrow to canvas', ()=> {
+        test('arrowSelector changes selected shape to arrow', ()=> {
           const el = fixture('BasicTestFixture');
           const shadow = el.shadowRoot;
-          assert(el.canvas.size() == 0);
+
+          const arrowClickIcon = shadow.querySelector('#arrowSel');
+          const addArrowSpy = sinon.spy(el, 'arrowSelector');
+          arrowClickIcon.click();
+          sinon.assert.calledOnce(addArrowSpy);
+         
+          assert(el.selectedShape == 'arrow');
+        });
+
+        test('rectSelector changes selected shape to rectangle', ()=> {
+          const el = fixture('BasicTestFixture');
+          const shadow = el.shadowRoot;
+
+          const rectangleClickIcon = shadow.querySelector('#rectSel');
+          const addRectangleSpy = sinon.spy(el, 'rectSelector');
+          rectangleClickIcon.click();
+          sinon.assert.calledOnce(addRectangleSpy);
+         
+          assert(el.selectedShape == 'rectangle');
+        });
+
+        test('rectSelector changes selectedShape when called after arrowSelector ', ()=> {
+          const el = fixture('BasicTestFixture');
+          const shadow = el.shadowRoot;
+
+          assert(el.selectedShape == 'rectangle');
 
           const arrowClickIcon = shadow.querySelector('#arrowSel');
           const addArrowSpy = sinon.spy(el, 'arrowSelector');
           arrowClickIcon.click();
 
           sinon.assert.calledOnce(addArrowSpy);
-          //issue is that activeObj is currently
-          debugger;
-          const activeObj = el.canvas.getActiveObject();
-          assert(activeObj == 'arrow');
+          assert(el.selectedShape == 'arrow');
+
+          const rectangleClickIcon = shadow.querySelector('#rectSel');
+          const addRectangleSpy = sinon.spy(el, 'rectSelector');
+          rectangleClickIcon.click();
+
+          sinon.assert.calledOnce(addRectangleSpy);
+          assert(el.selectedShape == 'rectangle');
         });
+
+        test('toggleSel icon calls toggle method', ()=> {
+          const el = fixture('BasicTestFixture');
+          const shadow = el.shadowRoot;
+    
+          const toggleClickIcon = shadow.querySelector('#toggleSel');
+          const toggleSpy = sinon.spy(el, 'toggle');
+          toggleClickIcon.click();
+
+          sinon.assert.calledOnce(toggleSpy);
+        });
+
+          test('toggle icon sets canvas selection to false ', ()=> {
+          const el = fixture('BasicTestFixture');
+          const shadow = el.shadowRoot;
+          
+          const toggleClickIcon = shadow.querySelector('#toggleSel');
+          const toggleSpy = sinon.spy(el, 'toggle');
+          assert(el.canvas.selection == true);
+          toggleClickIcon.click();
+          assert(el.canvas.selection == false);
+          sinon.assert.calledOnce(toggleSpy);
+        });
+
 
       });
     </script>
