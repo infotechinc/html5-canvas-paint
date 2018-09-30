@@ -11,15 +11,46 @@ import '@polymer/iron-icons/iron-icons.js';
 class PaintPractice extends PolymerElement {
   static get template() {
     return html`
+
+        <style> 
+
+          .myCanvas{
+            margin-left: 20px;
+          }
+
+          .icon-bar {
+            width: 120px;
+            margin-top: 17px;
+            margin-left: auto;
+            margin-right: auto; 
+            background-color: #555;
+            overflow: auto
+          }
+          .icon-bar a:hover {
+            background-color: #4CAF50;
+          }
+          .icon-bar a {
+            float: left; 
+            text-align: center;
+            width: 25%;
+            color: white; 
+            font-size: 35px;
+          }
+
+
+          
+        </style>
+
        <body onload = "initCanvasListeners()">
-       <canvas id="myCanvas" style="border:3px solid purple";></canvas>
-       <sp> Choose Option: <bl></sp>
-       <button id = "add" on-click = "addSquare" > Create Square </button>
-       <button id="delete" on-click = "deleteSquare"> Delete Square </button> 
-       <div class = "icon-bar" style = "background-color: #555">
-          <a class="active" href="#" id="rectSel" on-click= "rectSelector"><iron-icon hover = "background-color: #000" style = " color: white" icon = "check-box-outline-blank" ></iron-icon></a>
-          <a href="#" id="arrowSel" on-click= "arrowSelector">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
-          <a href="#" on-click= "toggle">  <iron-icon style = "color: white" icon = "swap-horiz" name="toggleSel"></iron-icon> </a>
+       <canvas id="myCanvas" style="border:3px solid black";></canvas>
+    
+     
+
+       <div class = "icon-bar" >
+          <a class="active" href="#" title = "Create Square" id="rectSel" on-click= "rectSelector"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
+          <a href="#" id="arrowSel"  title = "Create Arrow" on-click= "arrowSelector">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
+          <a href="#" id="toggleSel" title = "Switch Tools" on-click= "toggle">  <iron-icon style = "color: white" icon = "swap-horiz" ></iron-icon> </a>
+          <a href = "#" id = "delIcon" title = "Delete" on-click = "deleteSquare"> <iron-icon style = "color:white" icon = "delete"></iron-icon></a>
        </div>
        
     `;
@@ -34,7 +65,7 @@ class PaintPractice extends PolymerElement {
             left: 100,
             width: 50,
             height: 50,
-            fill: ' #9999ff',
+            fill: ' #4CAF50',
           }
         }
       },
@@ -47,7 +78,7 @@ class PaintPractice extends PolymerElement {
             width: 50,
             height: 50,
             fill: ' #9999ff',
-            path: 'M0 0 L100.1 0 M 100 0 L75 20 M100 0 L75 -20'
+            path: 'M0 0 L100.1 0 M 100 0 L75 20 M100 0 L75 -20',
           }
         }
       },
@@ -76,17 +107,12 @@ class PaintPractice extends PolymerElement {
   }
 
   toggle(){
+    console.log('toggle');
     this.canvas.selection = false;
-    this.canvas.off('mouse:down');
+    //this.canvas.setListening(false);
   }
 
   rectSelector(){
-    // document.body.addEventListener("click", this.initCanvasListeners.bind());
-     //this.canvas.on('mouse:down', this.initCanvasListeners.bind());
-    // this.canvas.onmousedown = function(){
-     // initCanvasListeners();
-    // }
-     //this.canvas.on('mouse:down', this.ready);
      this.canvas.selection = true;
      const toConstruct = this[this.selectedShape];
      this.selectedShape = 'rectangle';
@@ -95,17 +121,13 @@ class PaintPractice extends PolymerElement {
   }
   arrowSelector(){
      this.canvas.selection = true;
-     const toConstruct = this[this.selectedShape];
      this.selectedShape = 'arrow';
-     const path = new fabric.Path('M0 0 L100.1 0 M 100 0 L75 20 M100 0 L75 -20', {
-      left: 100,
-    top: 100,
-    stroke: 'red',
-    strokeWidth: 1,
-    fill: false
-     });
+     console.log(this.arrow.path);
+     const path = new fabric.Path(this.arrow.path);
+     path.set({left: this.arrow.left , top: this.arrow.top , fill: 'red', width: this.arrow.width, height: this.arrow.height});
+     console.log(path.left);
      this.canvas.add(path);
-    this.canvas.renderAll();
+     this.canvas.renderAll();
   }
   deleteListener(e){
     const key = e.keyCode;
@@ -117,7 +139,6 @@ class PaintPractice extends PolymerElement {
    }
   mouseDown(e){
     this.mouseDown = true;
-    var s = e;
     const pointer = this.canvas.getPointer(e.e);
     const posX = pointer.x;
     const posY = pointer.y;
@@ -127,6 +148,7 @@ class PaintPractice extends PolymerElement {
     shape.top = posY;
     this.shape = shape;
     this.canvas.add(shape);
+    this.toggle();
     this.downX = shape.left;
     this.downY = shape.top;
   }
@@ -141,7 +163,8 @@ class PaintPractice extends PolymerElement {
       console.log(this.shape.left);
       console.log("\n");
       console.log("pointer.x");
-      console.log(pointer.x);      this.shape.left = pointer.x;
+      console.log(pointer.x);     
+      this.shape.left = pointer.x;
     }
     if(this.shape.top >pointer.y){  
       this.shape.top = pointer.y;
@@ -159,8 +182,11 @@ class PaintPractice extends PolymerElement {
     console.log('event',e);
     const rect = new fabric.Rect(this.rectangle);
     this.canvas.add(rect);
+    this.toggle();
+    this.canvas.setActiveObject(rect);
     this.canvas.renderAll();
     console.log(this.canvas.size());
+    
   }
   deleteSquare(){
     const context = this.canvas.getContext("2d");

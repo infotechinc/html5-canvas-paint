@@ -159,7 +159,7 @@
           sinon.assert.calledOnce(toggleSpy);
         });
 
-          test('toggle icon sets canvas selection to false ', ()=> {
+        test('toggle icon sets canvas selection to false ', ()=> {
           const el = fixture('BasicTestFixture');
           const shadow = el.shadowRoot;
           
@@ -171,6 +171,25 @@
           sinon.assert.calledOnce(toggleSpy);
         });
 
+        test('delete icon deletes shape from canvas', ()=> {
+          const el = fixture('BasicTestFixture');
+          const shadow = el.shadowRoot;
+          
+          assert(el.canvas.size() == 0);
+
+          const deleteClickIcon = shadow.querySelector('#delIcon');
+          const deleteSpy = sinon.spy(el, 'deleteSquare');
+          el.addSquare();
+          assert(el.canvas.size() == 1);
+          deleteClickIcon.click();
+          sinon.assert.calledOnce(deleteSpy);
+          assert(el.canvas.size() == 0);
+        });
+
+        test('when clicking on a square another square is not created', ()=> {
+          
+
+        });
 
       });
     </script>
