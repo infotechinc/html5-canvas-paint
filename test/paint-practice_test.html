@@ -29,23 +29,6 @@
     <script type="module">
       suite('paint-practice', () => {
 
-        test.skip('instantiating the element with default properties works', () => {
-          const element = fixture('BasicTestFixture');
-          assert.equal(element.prop1, 'paint-practice');
-          const elementShadowRoot = element.shadowRoot;
-          const elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello paint-practice!');
-        });
-
-        test.skip('setting a property on the element works', () => {
-          // Create a test fixture
-          const element = fixture('ChangedPropertyTestFixture');
-          assert.equal(element.prop1, 'new-prop1');
-          const elementShadowRoot = element.shadowRoot;
-          const elementHeader = elementShadowRoot.querySelector('h2');
-          assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
-        });
-
         test('adding a square to the canvas', (done) => {
           const el = fixture('BasicTestFixture');
           const alertStub = sinon.stub(window, 'alert').returns(true);
