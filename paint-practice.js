@@ -1,6 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
-import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/iron-icons/iron-icons.js';
+
 /**
  * `paint-practice`
  *
@@ -41,7 +41,7 @@ class PaintPractice extends PolymerElement {
           
         </style>
 
-       <body onload = "initCanvasListeners()">
+  
        <canvas id="myCanvas" style="border:3px solid black";></canvas>
     
      
@@ -49,7 +49,7 @@ class PaintPractice extends PolymerElement {
        <div class = "icon-bar" >
           <a class="active" href="#" title = "Create Square" id="rectSel" on-click= "rectSelector"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
           <a href="#" id="arrowSel"  title = "Create Arrow" on-click= "arrowSelector">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
-          <a href="#" id="toggleSel" title = "Switch Tools" on-click= "toggle">  <iron-icon style = "color: white" icon = "swap-horiz" ></iron-icon> </a>
+          <a href="#" id="switchSel" title = "Switch Tools" on-click= "switchToolSelection">  <iron-icon style = "color: white" icon = "swap-horiz" ></iron-icon> </a>
           <a href = "#" id = "delIcon" title = "Delete" on-click = "deleteSquare"> <iron-icon style = "color:white" icon = "delete"></iron-icon></a>
        </div>
        
@@ -65,7 +65,7 @@ class PaintPractice extends PolymerElement {
             left: 100,
             width: 50,
             height: 50,
-            fill: ' #4CAF50',
+            fill: ' #000',
           }
         }
       },
@@ -77,26 +77,24 @@ class PaintPractice extends PolymerElement {
             left:100,
             width: 50,
             height: 50,
-            fill: ' #9999ff',
+            fill: ' #000',
             path: 'M0 0 L100.1 0 M 100 0 L75 20 M100 0 L75 -20',
           }
         }
       },
-      selectedShape: {
+      selectedTool: {
         type: String,
-        value: 'rectangle'
+        value: 'rectangle',
       }
     };
   }
   ready(){
     super.ready();
-    console.log(fabric);
     const canvas = this.shadowRoot.querySelector('canvas');
     const iconRect = this.shadowRoot.querySelector('#rectSel');
     const iconArrow = this.shadowRoot.querySelector('#arrowSel');
     this.canvas = new fabric.Canvas(canvas, {width: 500, height: 500});
     this.canvas.renderAll();  
-    this.initCanvasListeners();
   }
 
   initCanvasListeners(){
@@ -106,27 +104,26 @@ class PaintPractice extends PolymerElement {
     document.body.addEventListener('keydown', this.deleteListener.bind(this), false);
   }
 
-  toggle(){
-    console.log('toggle');
-    this.canvas.selection = false;
-    //this.canvas.setListening(false);
+  switchToolSelection(){
+    this.canvas.selection = true;
+    this.canvas.off('mouse:down');
   }
 
   rectSelector(){
-     this.canvas.selection = true;
-     const toConstruct = this[this.selectedShape];
-     this.selectedShape = 'rectangle';
-     
-     this.canvas.renderAll();
+    //I want to turn the listeners back on when user clicks the rectangle tool
+    this.selectedTool = 'rectangle';
+    this.canvas.selection = false;
+    this.initCanvasListeners();
+
+    const toConstruct = this[this.selectedShape];
+    this.canvas.renderAll();
   }
   arrowSelector(){
-     this.canvas.selection = true;
-     this.selectedShape = 'arrow';
-     console.log(this.arrow.path);
-     const path = new fabric.Path(this.arrow.path);
-     path.set({left: this.arrow.left , top: this.arrow.top , fill: 'red', width: this.arrow.width, height: this.arrow.height});
-     console.log(path.left);
-     this.canvas.add(path);
+     this.canvas.selection = false;
+     this.selectedTool = 'arrow';
+     this.initCanvasListeners();
+
+     new fabric.Path(this.arrow); 
      this.canvas.renderAll();
   }
   deleteListener(e){
@@ -134,7 +131,6 @@ class PaintPractice extends PolymerElement {
     if(key == '8'){
       this.canvas.remove(this.canvas.getActiveObject());
     }
-     console.log(key);
      {detail: 'delete'};
    }
   mouseDown(e){
@@ -148,7 +144,7 @@ class PaintPractice extends PolymerElement {
     shape.top = posY;
     this.shape = shape;
     this.canvas.add(shape);
-    this.toggle();
+    this.switchToolSelection();
     this.downX = shape.left;
     this.downY = shape.top;
   }
@@ -158,12 +154,7 @@ class PaintPractice extends PolymerElement {
     }
     const pointer = this.canvas.getPointer(e.e);
     const shape = this.canvas.getActiveObject();
-    if(this.shape.left > pointer.x ){
-      console.log("this.shape.left");
-      console.log(this.shape.left);
-      console.log("\n");
-      console.log("pointer.x");
-      console.log(pointer.x);     
+    if(this.shape.left > pointer.x ){    
       this.shape.left = pointer.x;
     }
     if(this.shape.top >pointer.y){  
@@ -177,16 +168,13 @@ class PaintPractice extends PolymerElement {
   }
   mouseUp(e){
     this.mouseDown = false;
+    this.selectedTool = "switchSel";
   }
   addSquare(e){
-    console.log('event',e);
     const rect = new fabric.Rect(this.rectangle);
     this.canvas.add(rect);
-    this.toggle();
     this.canvas.setActiveObject(rect);
-    this.canvas.renderAll();
-    console.log(this.canvas.size());
-    
+    this.canvas.renderAll(); 
   }
   deleteSquare(){
     const context = this.canvas.getContext("2d");

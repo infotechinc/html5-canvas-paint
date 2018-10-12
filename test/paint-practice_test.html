@@ -28,57 +28,43 @@
 
     <script type="module">
       suite('paint-practice', () => {
+        var el;
+        var shadow;
+        setup(function(){
+           el = fixture('BasicTestFixture');
+           shadow = el.shadowRoot;
+          
+        });
 
         test('adding a square to the canvas', (done) => {
-          const el = fixture('BasicTestFixture');
           const alertStub = sinon.stub(window, 'alert').returns(true);
-          const shadow = el.shadowRoot;
-          //arrange
-          const numSquares = el.canvas.size();
-       
-          const addBtn = shadow.querySelector('#add');
-          //act
+          assert.equal(el.canvas.size(), 0);
           const addSquareSpy = sinon.spy(el, 'addSquare');
-          addBtn.click();
-          //assert
+          el.addSquare();
           sinon.assert.calledOnce(addSquareSpy);
-          assert.equal(el.canvas.size(), numSquares+1);
+          assert.equal(el.canvas.size(), 1);
           done();
-
         });
 
         test('deleting a square from the canvas', (done) => {
-          const el = fixture('BasicTestFixture');
-          const shadow = el.shadowRoot;
-          //arrange
-          assert(el.canvas.size()==0);
+          assert.equal(el.canvas.size(), 0);
           el.addSquare();
-          const deleteBtn = shadow.querySelector('#delete');
-          assert(el.canvas.size()==1);
-          //act
+          assert.equal(el.canvas.size(), 1);
           const deleteSquareSpy = sinon.spy(el, 'deleteSquare');
-          el.canvas;
-          deleteBtn.click();
-          //assert
+          el.deleteSquare();
           sinon.assert.calledOnce(deleteSquareSpy);
           assert.equal(el.canvas.size(), 0);
-          done();
-         
+          done(); 
         });
 
          test('deleting from delete key listener', () => {
-          const el = fixture('BasicTestFixture');
-          const shadow = el.shadowRoot;
-          // arrange
-          const num = el.canvas.size();
-          assert(num==0);
+          assert.equal(el.canvas.size(), 0);
           el.addSquare();
-          assert(el.canvas.size()==1);
-
+          assert.equal(el.canvas.size(), 1);
           const dltKeySpy = sinon.spy(el, 'deleteListener');
           el.canvas.on('keydown', function(event){
           assert.equal(event.detail, 'delete');
-          assert.equal(el.canvas.size(), num);
+          assert.equal(el.canvas.size(), 0);
           sinon.assert.calledOnce(dltKeySpy);
           });
           
@@ -86,93 +72,85 @@
 
         });
 
-        test('arrowSelector changes selected shape to arrow', ()=> {
-          const el = fixture('BasicTestFixture');
-          const shadow = el.shadowRoot;
-
+        test('arrowSelector changes selected tool to arrow', ()=> {
           const arrowClickIcon = shadow.querySelector('#arrowSel');
           const addArrowSpy = sinon.spy(el, 'arrowSelector');
           arrowClickIcon.click();
           sinon.assert.calledOnce(addArrowSpy);
-         
-          assert(el.selectedShape == 'arrow');
+          assert(el.selectedTool == 'arrow');
         });
 
-        test('rectSelector changes selected shape to rectangle', ()=> {
-          const el = fixture('BasicTestFixture');
-          const shadow = el.shadowRoot;
-
+        test('rectSelector changes selected tool to rectangle', ()=> {
           const rectangleClickIcon = shadow.querySelector('#rectSel');
           const addRectangleSpy = sinon.spy(el, 'rectSelector');
           rectangleClickIcon.click();
           sinon.assert.calledOnce(addRectangleSpy);
-         
-          assert(el.selectedShape == 'rectangle');
+          assert.equal(el.selectedTool, 'rectangle');
         });
 
-        test('rectSelector changes selectedShape when called after arrowSelector ', ()=> {
-          const el = fixture('BasicTestFixture');
-          const shadow = el.shadowRoot;
-
-          assert(el.selectedShape == 'rectangle');
-
+        test('rectSelector changes selectedTool when called after arrowSelector ', ()=> {
+          assert.equal(el.selectedTool, 'rectangle');
           const arrowClickIcon = shadow.querySelector('#arrowSel');
           const addArrowSpy = sinon.spy(el, 'arrowSelector');
           arrowClickIcon.click();
-
           sinon.assert.calledOnce(addArrowSpy);
-          assert(el.selectedShape == 'arrow');
-
+          assert.equal(el.selectedTool, 'arrow');
           const rectangleClickIcon = shadow.querySelector('#rectSel');
           const addRectangleSpy = sinon.spy(el, 'rectSelector');
           rectangleClickIcon.click();
-
           sinon.assert.calledOnce(addRectangleSpy);
-          assert(el.selectedShape == 'rectangle');
+          assert.equal(el.selectedTool, 'rectangle');
         });
 
-        test('toggleSel icon calls toggle method', ()=> {
-          const el = fixture('BasicTestFixture');
-          const shadow = el.shadowRoot;
-    
-          const toggleClickIcon = shadow.querySelector('#toggleSel');
-          const toggleSpy = sinon.spy(el, 'toggle');
-          toggleClickIcon.click();
+        test('switchSelection icon calls switchSelection method', ()=> {
+          const switchClickIcon = shadow.querySelector('#switchSel');
+          const switchSpy = sinon.spy(el, 'switchToolSelection');
+          switchClickIcon.click();
 
-          sinon.assert.calledOnce(toggleSpy);
+          sinon.assert.calledOnce(switchSpy);
         });
 
-        test('toggle icon sets canvas selection to false ', ()=> {
-          const el = fixture('BasicTestFixture');
-          const shadow = el.shadowRoot;
-          
-          const toggleClickIcon = shadow.querySelector('#toggleSel');
-          const toggleSpy = sinon.spy(el, 'toggle');
-          assert(el.canvas.selection == true);
-          toggleClickIcon.click();
-          assert(el.canvas.selection == false);
-          sinon.assert.calledOnce(toggleSpy);
+        test('switchSelection icon sets canvas selection to true ', ()=> {
+          const switchClickIcon = shadow.querySelector('#switchSel');
+          const switchSpy = sinon.spy(el, 'switchToolSelection');
+          switchClickIcon.click();
+          assert.equal(el.canvas.selection, true);
+          sinon.assert.calledOnce(switchSpy);
         });
 
         test('delete icon deletes shape from canvas', ()=> {
-          const el = fixture('BasicTestFixture');
-          const shadow = el.shadowRoot;
-          
-          assert(el.canvas.size() == 0);
-
+          assert.equal(el.canvas.size(), 0);
           const deleteClickIcon = shadow.querySelector('#delIcon');
           const deleteSpy = sinon.spy(el, 'deleteSquare');
           el.addSquare();
-          assert(el.canvas.size() == 1);
+          assert.equal(el.canvas.size(), 1);
           deleteClickIcon.click();
           sinon.assert.calledOnce(deleteSpy);
-          assert(el.canvas.size() == 0);
+          assert.equal(el.canvas.size() , 0);
         });
 
         test('when clicking on a square another square is not created', ()=> {
+          assert.equal(el.canvas.size(), 0);
+          el.addSquare();
+          assert.equal(el.canvas.size(), 1);
+          const shape = el.canvas.getActiveObject();
+          shape.onSelect();
+          assert.equal(el.canvas.size(), 1);
+        });
+
+        test.skip('rectangles can be added when selecting the rectangle icon after selecting the switchToolSelection icon', ()=> {
+
+          assert.equal(el.canvas.size(), 0);
+          const switchClickIcon = shadow.querySelector('#switchSel');
+          const switchSpy = sinon.spy(el, 'switchToolSelection');
+          switchClickIcon.click();
+          //I want to do mouse down here and simulate the user dragging a square but I dont know how i'd do that
+          const rectangleClickIcon = shadow.querySelector('#rectSel');
+          const addRectangleSpy = sinon.spy(el, 'rectSelector');
           
 
         });
+
 
       });
     </script>
