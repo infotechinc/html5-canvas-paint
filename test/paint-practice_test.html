@@ -20,12 +20,6 @@
       </template>
     </test-fixture>
 
-    <test-fixture id="ChangedPropertyTestFixture">
-      <template>
-        <paint-practice></paint-practice>
-      </template>
-    </test-fixture>
-
     <script type="module">
       suite('paint-practice', () => {
         var el;
@@ -72,39 +66,39 @@
 
         });
 
-        test('arrowSelector changes selected tool to arrow', ()=> {
+        test('arrowToolSelected changes selected tool to arrow', ()=> {
           const arrowClickIcon = shadow.querySelector('#arrowSel');
-          const addArrowSpy = sinon.spy(el, 'arrowSelector');
+          const addArrowSpy = sinon.spy(el, 'arrowToolSelected');
           arrowClickIcon.click();
           sinon.assert.calledOnce(addArrowSpy);
           assert(el.selectedTool == 'arrow');
         });
 
-        test('rectSelector changes selected tool to rectangle', ()=> {
+        test('rectToolSelected changes selected tool to rectangle', ()=> {
           const rectangleClickIcon = shadow.querySelector('#rectSel');
-          const addRectangleSpy = sinon.spy(el, 'rectSelector');
+          const addRectangleSpy = sinon.spy(el, 'rectToolSelected');
           rectangleClickIcon.click();
           sinon.assert.calledOnce(addRectangleSpy);
           assert.equal(el.selectedTool, 'rectangle');
         });
 
-        test('rectSelector changes selectedTool when called after arrowSelector ', ()=> {
+        test('rectToolSelected changes selectedTool when called after arrowToolSelected ', ()=> {
           assert.equal(el.selectedTool, 'rectangle');
           const arrowClickIcon = shadow.querySelector('#arrowSel');
-          const addArrowSpy = sinon.spy(el, 'arrowSelector');
+          const addArrowSpy = sinon.spy(el, 'arrowToolSelected');
           arrowClickIcon.click();
           sinon.assert.calledOnce(addArrowSpy);
           assert.equal(el.selectedTool, 'arrow');
           const rectangleClickIcon = shadow.querySelector('#rectSel');
-          const addRectangleSpy = sinon.spy(el, 'rectSelector');
+          const addRectangleSpy = sinon.spy(el, 'rectToolSelected');
           rectangleClickIcon.click();
           sinon.assert.calledOnce(addRectangleSpy);
           assert.equal(el.selectedTool, 'rectangle');
         });
 
-        test('switchSelection icon calls switchSelection method', ()=> {
+        test('selection icon calls selecToolSelected method', ()=> {
           const switchClickIcon = shadow.querySelector('#switchSel');
-          const switchSpy = sinon.spy(el, 'switchToolSelection');
+          const switchSpy = sinon.spy(el, 'selectToolSelected');
           switchClickIcon.click();
 
           sinon.assert.calledOnce(switchSpy);
@@ -112,7 +106,7 @@
 
         test('switchSelection icon sets canvas selection to true ', ()=> {
           const switchClickIcon = shadow.querySelector('#switchSel');
-          const switchSpy = sinon.spy(el, 'switchToolSelection');
+          const switchSpy = sinon.spy(el, 'selectToolSelected');
           switchClickIcon.click();
           assert.equal(el.canvas.selection, true);
           sinon.assert.calledOnce(switchSpy);
@@ -138,15 +132,15 @@
           assert.equal(el.canvas.size(), 1);
         });
 
-        test.skip('rectangles can be added when selecting the rectangle icon after selecting the switchToolSelection icon', ()=> {
+        test.skip('rectangles can be added when selecting the rectangle icon after selecting the setSelectionTool icon', ()=> {
 
           assert.equal(el.canvas.size(), 0);
           const switchClickIcon = shadow.querySelector('#switchSel');
-          const switchSpy = sinon.spy(el, 'switchToolSelection');
+          const switchSpy = sinon.spy(el, 'setSelectionTool');
           switchClickIcon.click();
           //I want to do mouse down here and simulate the user dragging a square but I dont know how i'd do that
           const rectangleClickIcon = shadow.querySelector('#rectSel');
-          const addRectangleSpy = sinon.spy(el, 'rectSelector');
+          const addRectangleSpy = sinon.spy(el, 'rectToolSelected');
           
 
         });
