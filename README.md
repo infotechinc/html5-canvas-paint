@@ -1,6 +1,6 @@
 # paint
 
-Sydney's WICSE Paint Project
+Sydney Achinger's WICSE Paint Project
 Mentor: Josh Brown
 
 =============================
