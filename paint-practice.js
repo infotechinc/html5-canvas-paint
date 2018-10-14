@@ -1,49 +1,66 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
-
+import '@polymer/iron-icons/iron-icons.js';
+import {injectShapes} from './injectShapes.js';
 
 /**
  * `paint-practice`
- * practice using making a shape and button with fabric.js
  *
  * @customElement
  * @polymer
  * @demo demo/index.html
  */
 class PaintPractice extends PolymerElement {
-  
-      // <canvas id = "canvas"> </canvas>
- 
   static get template() {
-    //style="border:3px solid purple
     return html`
-     
-        
-       
-       <canvas id="myCanvas" style="border:3px solid purple";></canvas>
-       <sp> Choose Option: <bl></sp>
-       <button on-click = "addSquare" > Create Square </button>
-       <button id="delete" on-click = "deleteSquare"> Delete Square </button>
 
+        <style> 
+
+          .myCanvas{
+            margin-left: 20px;
+          }
+
+          .icon-bar {
+            width: 120px;
+            margin-top: 17px;
+            margin-left: auto;
+            margin-right: auto; 
+            background-color: #555;
+            overflow: auto
+          }
+          .icon-bar a:hover {
+            background-color: #4CAF50;
+          }
+          .icon-bar a {
+            float: left; 
+            text-align: center;
+            width: 25%;
+            color: white; 
+            font-size: 35px;
+          }
+
+
+          
+        </style>
+
+  
+       <canvas id="myCanvas" style="border:3px solid black";></canvas>
+    
      
+
+       <div class = "icon-bar" >
+          <a class="active" href="#" title = "Create Square" id="rectSel" on-click= "rectToolSelected"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
+          <a href="#" id="arrowSel"  title = "Create Arrow" on-click= "arrowToolSelected">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
+          <a href="#" id="switchSel" title = "Switch Tools" on-click= "selectToolSelected">  <iron-icon style = "color: white" icon = "swap-horiz" ></iron-icon> </a>
+          <a href = "#" id = "delIcon" title = "Delete" on-click = "deleteSquare"> <iron-icon style = "color:white" icon = "delete"></iron-icon></a>
+       </div>
+       
     `;
   }
   static get properties() {
     return {
-      rectangle: {
-        type: Object,
-        value: ()=>{
-          return { 
-            top: 100,
-            left: 100,
-            width: 50,
-            height: 50,
-            fill: ' #9999ff',
-          }
-        }
-      },
-      selectedShape: {
+      selectedTool: {
         type: String,
-        value: 'rectangle'
+        value: 'rectangle',
       }
     };
   }
@@ -52,48 +69,97 @@ class PaintPractice extends PolymerElement {
 
   ready(){
     super.ready();
-    console.log(fabric);
-    //shadow selector query
-    
     const canvas = this.shadowRoot.querySelector('canvas');
-   // const button = this.shadowRoot.querySelector('button');
-
+    injectShapes(this);
     this.canvas = new fabric.Canvas(canvas, {width: 500, height: 500});
-    
-    canvas.addEventListener('mouse:down', mouseDown(options));
-    this.canvas.renderAll();
- 
-
+    this.canvas.renderAll();  
   }
-  canvas.onmousedown = function (e) {
-    // React to the mouse down event
-};
-   //mouseDown(options){
-    //pointer is name of flag for x & y coordinates, 'e' specifies original event info
-   // const pointer = this.canvas.getPointer(options.e);
-    //why so many this
-   //  shape = this[this.selectedShape];
-   // console.log(TEST);
-    }
 
+  deleteListener(e){
+    const key = e.keyCode;
+    if(key == '8'){
+      this.canvas.remove(this.canvas.getActiveObject());
+    }
+  }
+
+  listenersOn(){
+    this.canvas.on('mouse:down', this.mouseDown.bind(this));
+    this.canvas.on('mouse:move', this.mouseMove.bind(this));
+    this.canvas.on('mouse:up', this.mouseUp.bind(this));
+    document.body.addEventListener('keydown', this.deleteListener.bind(this), false);
+  }
   
-  addSquare(){
+  mouseDown(e){
+    this.isMouseDown = true;
+    const pointer = this.canvas.getPointer(e.e);
+    const posX = pointer.x;
+    const posY = pointer.y;
+    const toConstruct = this[this.selectedTool];
+    const shape = new fabric.Rect(toConstruct);
+    shape.left = posX;
+    shape.top = posY;
+    this.currentShape = shape;
+    this.canvas.add(shape);
+    this.downX = shape.left;
+    this.downY = shape.top;
+  }
+  
+  mouseMove(e){
+    if(this.isMouseDown != true) return;
+    const pointer = this.canvas.getPointer(e.e);
+    if(this.currentShape.left > pointer.x ) 
+    this.currentShape.left = pointer.x;
+    if(this.currentShape.top >pointer.y) 
+    this.currentShape.top = pointer.y;
+    const width = (Math.abs(pointer.x - this.downX));
+    const height = (Math.abs(pointer.y -this.downY));
+    this.currentShape.set({width: width, height: height});
+    this.currentShape.setCoords();
+    this.canvas.renderAll();
+  }
+
+  mouseUp(e){
+    this.currentShape = null;
+    this.isMouseDown = false;
+    this.selectToolSelected();
+  }
+  
+  rectToolSelected(){
+    //I want to turn the listeners back on when user clicks the rectangle tool
+    this.selectedTool = 'rectangle';
+    this.canvas.selection = false;
+    this.listenersOn();
+    this.canvas.renderAll();
+  }
+
+  arrowToolSelected(){
+     this.canvas.selection = false;
+     this.selectedTool = 'arrow';
+     this.listenersOn();
+
+     new fabric.Path(this.arrow); 
+     this.canvas.renderAll();
+  }
+  
+  selectToolSelected(){
+    this.canvas.selection = true;
+    this.selectedTool = "switchSel";
+    this.canvas.off('mouse:down');
+  }
+  
+  addSquare(e){
     const rect = new fabric.Rect(this.rectangle);
     this.canvas.add(rect);
-    this.canvas.renderAll();
-    console.log(this.canvas.size());
+    this.canvas.setActiveObject(rect);
+    this.canvas.renderAll(); 
   }
 
   deleteSquare(){
-    const context = this.canvas.getContext("2d");
     if( this.canvas.getActiveObject() == null){
-      window.alert("Please select shape you wish to delete.\n A shape must be created in order to delete.");
+      window.alert("Please select shape you wish to delete.\n");
+      return;
     }
     this.canvas.remove(this.canvas.getActiveObject());
-
   }
-  
-
 }
-
 window.customElements.define('paint-practice', PaintPractice);
