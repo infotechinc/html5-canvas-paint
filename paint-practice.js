@@ -1,5 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-icons/iron-icons.js';
+
 import {injectShapes} from './injectShapes.js';
 
 /**
@@ -14,11 +15,9 @@ class PaintPractice extends PolymerElement {
     return html`
 
         <style> 
-
           .myCanvas{
             margin-left: 20px;
           }
-
           .icon-bar {
             width: 120px;
             margin-top: 17px;
@@ -36,16 +35,10 @@ class PaintPractice extends PolymerElement {
             width: 25%;
             color: white; 
             font-size: 35px;
-          }
-
-
-          
+          }      
         </style>
 
-  
        <canvas id="myCanvas" style="border:3px solid black";></canvas>
-    
-     
 
        <div class = "icon-bar" >
           <a class="active" href="#" title = "Create Square" id="rectSel" on-click= "rectToolSelected"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
@@ -64,8 +57,6 @@ class PaintPractice extends PolymerElement {
       }
     };
   }
-
- 
 
   ready(){
     super.ready();
@@ -92,8 +83,7 @@ class PaintPractice extends PolymerElement {
   mouseDown(e){
     this.isMouseDown = true;
     const pointer = this.canvas.getPointer(e.e);
-    const posX = pointer.x;
-    const posY = pointer.y;
+    const posX = pointer.x, posY = pointer.y;
     const toConstruct = this[this.selectedTool];
     const shape = new fabric.Rect(toConstruct);
     shape.left = posX;
@@ -111,8 +101,7 @@ class PaintPractice extends PolymerElement {
     this.currentShape.left = pointer.x;
     if(this.currentShape.top >pointer.y) 
     this.currentShape.top = pointer.y;
-    const width = (Math.abs(pointer.x - this.downX));
-    const height = (Math.abs(pointer.y -this.downY));
+    const width = (Math.abs(pointer.x - this.downX)), height = (Math.abs(pointer.y -this.downY));
     this.currentShape.set({width: width, height: height});
     this.currentShape.setCoords();
     this.canvas.renderAll();
@@ -125,26 +114,24 @@ class PaintPractice extends PolymerElement {
   }
   
   rectToolSelected(){
-    //I want to turn the listeners back on when user clicks the rectangle tool
-    this.selectedTool = 'rectangle';
-    this.canvas.selection = false;
-    this.listenersOn();
-    this.canvas.renderAll();
+     this.selectedTool = 'rectangle';
+     this.canvas.selection = false;
+     this.listenersOn();
+     this.canvas.renderAll();
   }
 
   arrowToolSelected(){
      this.canvas.selection = false;
      this.selectedTool = 'arrow';
      this.listenersOn();
-
      new fabric.Path(this.arrow); 
      this.canvas.renderAll();
   }
   
   selectToolSelected(){
-    this.canvas.selection = true;
-    this.selectedTool = "switchSel";
-    this.canvas.off('mouse:down');
+     this.canvas.selection = true;
+     this.selectedTool = "switchSel";
+     this.canvas.off('mouse:down');
   }
   
   addSquare(e){
