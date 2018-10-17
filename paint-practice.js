@@ -82,16 +82,18 @@ class PaintPractice extends PolymerElement {
   
   mouseDown(e){
     this.isMouseDown = true;
-    const pointer = this.canvas.getPointer(e.e);
-    const posX = pointer.x, posY = pointer.y;
-    const toConstruct = this[this.selectedTool];
-    const shape = new fabric.Rect(toConstruct);
-    shape.left = posX;
-    shape.top = posY;
-    this.currentShape = shape;
-    this.canvas.add(shape);
-    this.downX = shape.left;
-    this.downY = shape.top;
+    // debugger;
+    // debugger;
+    // const pointer = this.canvas.getPointer(e.e);
+    // const posX = pointer.x, posY = pointer.y;
+    // const toConstruct = this[this.selectedTool];
+    // const shape = new fabric.Rect(toConstruct);
+    // shape.left = posX;
+    // shape.top = posY;
+    // this.currentShape = shape;
+    // this.canvas.add(shape);
+    // this.downX = shape.left;
+    // this.downY = shape.top;
   }
   
   mouseMove(e){
