@@ -2,7 +2,7 @@
 Sydney Achinger's WICSE Paint Project
 Mentor: Josh Brown
 
-The "Paint Project" allows users to create resizable shapes by clicking and dragging on an HTML 5 canvas. The goal of this project is to create a draggable arrow tool to be used in a PDF editor/mark-up tool. 
+The "Paint Project" allows users to create resizable shapes by clicking and dragging on an HTML 5 canvas. The goal of this project is to create a draggable arrow tool to be used in a PDF editor/mark-up software. 
 
 # Dependencies
 
