@@ -26,22 +26,24 @@ class PaintPractice extends PolymerElement {
             background-color: #555;
             overflow: auto
           }
-          .icon-bar a:hover {
-            background-color: #4CAF50;
-          }
           .icon-bar a {
             float: left; 
             text-align: center;
             width: 25%;
             color: white; 
             font-size: 35px;
-          }      
+          }  
+          .icon-bar a:hover {
+            background-color: #4CAF50;
+          }
+          
+              
         </style>
 
        <canvas id="myCanvas" style="border:3px solid black";></canvas>
 
        <div class = "icon-bar" >
-          <a class="active" href="#" title = "Create Square" id="rectSel" on-click= "rectToolSelected"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
+          <a href="#" href="#" title = "Create Square" id="rectSel" on-click= "rectToolSelected"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
           <a href="#" id="arrowSel"  title = "Create Arrow" on-click= "arrowToolSelected">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
           <a href="#" id="switchSel" title = "Switch Tools" on-click= "selectToolSelected">  <iron-icon style = "color: white" icon = "swap-horiz" ></iron-icon> </a>
           <a href = "#" id = "delIcon" title = "Delete" on-click = "deleteSquare"> <iron-icon style = "color:white" icon = "delete"></iron-icon></a>
@@ -82,18 +84,16 @@ class PaintPractice extends PolymerElement {
   
   mouseDown(e){
     this.isMouseDown = true;
-    // debugger;
-    // debugger;
-    // const pointer = this.canvas.getPointer(e.e);
-    // const posX = pointer.x, posY = pointer.y;
-    // const toConstruct = this[this.selectedTool];
-    // const shape = new fabric.Rect(toConstruct);
-    // shape.left = posX;
-    // shape.top = posY;
-    // this.currentShape = shape;
-    // this.canvas.add(shape);
-    // this.downX = shape.left;
-    // this.downY = shape.top;
+    const pointer = this.canvas.getPointer(e.e);
+    const posX = pointer.x, posY = pointer.y;
+    const toConstruct = this[this.selectedTool];
+    const shape = new fabric.Rect(toConstruct);
+    shape.left = posX;
+    shape.top = posY;
+    this.currentShape = shape;
+    this.canvas.add(shape);
+    this.downX = shape.left;
+    this.downY = shape.top;
   }
   
   mouseMove(e){
