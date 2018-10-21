@@ -38,7 +38,9 @@ class PaintPractice extends PolymerElement {
             font-size: 35px;
           }
 
-
+          .icon-bar a:focus-within  {
+            background-color: #000
+          }
           
         </style>
 
@@ -73,6 +75,12 @@ class PaintPractice extends PolymerElement {
     injectShapes(this);
     this.canvas = new fabric.Canvas(canvas, {width: 500, height: 500});
     this.canvas.renderAll();  
+  }
+
+  activate(o){
+    if(o == 'square'){
+      const button = this.shadowRoot.querySelector('rectSel');
+      }
   }
 
   deleteListener(e){
