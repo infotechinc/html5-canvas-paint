@@ -148,41 +148,27 @@
            sinon.assert.calledOnce(listenersOnSpy);
         });
 
-        test('when mouseDown is called, isMouseDown variable is set to true', ()=> {
-          debugger;
-          el.isMouseDown = false;
-          el.mouseDown();
-          assert.equal(el.isMouseDown, true);
-        });
-
-
-        //FAILING
-        test('when a mouse down event occurs the mouseDown function gets called', ()=> {
-         
-          const mouseDownSpy = sinon.spy(el, 'mouseDown');
-          el.canvas.on('mouse:down', function(e){
-          sinon.assert.calledOnce(mouseDownSpy);
-          });
+        test('when a mouse down event occurs the mouseDown function gets called', (done)=> {
+          //sinon does not seem to work for rebound function calls:
+          // https://stackoverflow.com/questions/25578112/spying-on-a-method-with-sinon-method-bound-to-event-listener-method-was-execut
+          //so, for this one test, since we just want to test that the method is getting called,
+          // redefine the mousedown function of el to call done and make the test pass.
+          // if done is not called in an async test, it will time out a fail which is what we want it to do
+          //if method does not get called. There are other solutions but this suffices.
+          el.mouseDown = function(){done();}
+          el.listenersOn();
           el.canvas.fire('mouse:down');
         });
 
-        //FAILING
-        test('when a mouse down event occurs the isMouseDown variable is set to true', function(done) {
+        test('when a mouse down event occurs the isMouseDown variable is set to true', function() {
           el.listenersOn();
-          
-           el.canvas.on('mouse:down', function(e){
-           assert.equal(el.isMouseDown, true);
-         });
-           el.canvas.fire('mouse:down');
+          el.isMouseDown = false;
+          MockInteractions.down(el.canvas.upperCanvasEl);
+          assert.equal( el.isMouseDown, true);
         });
 
-        //FAILING
-         test('when a mouse move event occurs the mouseMove function gets called', ()=> {
-
-          const mouseMoveSpy = sinon.spy(el, 'mouseMove');
-          el.canvas.on('mouse:move', function(event){
-          });
-          el.canvas.fire('mouse:move');
+        test('when a mouse move event occurs the mouseMove function gets called', ()=> {
+          throw 'fix this based off the mouse down pattern i showed above'
         });
 
         test('when the mouse up event occurs, the mouseUp method gets called, followed by selectToolSelected method getting called', ()=> {
