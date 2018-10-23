@@ -74,14 +74,14 @@ class PaintPractice extends PolymerElement {
     this.canvas.renderAll(); 
 
   }
-  makeActive(id){
-    console.log(id);
-    var icon =  this.shadowRoot.querySelector(id);
-    icon.style.cssText = "background-color: #4CAF50;"
-  }
-  makeNeutral(id){
-    var icon =  this.shadowRoot.querySelector(id);
-    icon.style.cssText = "background-color:  #555;"
+  
+  makeIconNeutral(){
+    var icons = [ this.shadowRoot.querySelector('#switchSel'),  this.shadowRoot.querySelector('#delIcon'),
+    this.shadowRoot.querySelector('#arrowSel'), this.shadowRoot.querySelector('#rectSel') ];
+    var x;
+    for( x in icons){
+      icons[x].style.cssText = "background-color:  #555;"
+    }
   }
 
   activateAndSelectSquare(){
@@ -102,58 +102,23 @@ class PaintPractice extends PolymerElement {
     this.deleteSquare();
   }
   activateSquare(){
-   var switchIcon =  this.shadowRoot.querySelector('#switchSel');
-   switchIcon.style.cssText = "background-color:  #555;"
-
-   var delIcon =  this.shadowRoot.querySelector('#delIcon');
-   delIcon.style.cssText = "background-color: #555;"
-
-   var arrowIcon =  this.shadowRoot.querySelector('#arrowSel');
-   arrowIcon.style.cssText = "background-color: #555;"
-
+   this.makeIconNeutral();
    var rectIcon =  this.shadowRoot.querySelector('#rectSel');
    rectIcon.style.cssText = "background-color: #4CAF50;"
   }
 
   activateArrow(){
-  var switchIcon =  this.shadowRoot.querySelector('#switchSel');
-   switchIcon.style.cssText = "background-color:  #555;"
-
-   var delIcon =  this.shadowRoot.querySelector('#delIcon');
-   delIcon.style.cssText = "background-color: #555;"
-
-   var rectIcon =  this.shadowRoot.querySelector('#rectSel');
-   rectIcon.style.cssText = "background-color: #555;"
-
+   this.makeIconNeutral();
    var arrowIcon =  this.shadowRoot.querySelector('#arrowSel');
    arrowIcon.style.cssText = "background-color: #4CAF50;"
   }
   activateSwitch(){ 
-
-   var delIcon =  this.shadowRoot.querySelector('#delIcon');
-   delIcon.style.cssText = "background-color: #555;"
-
-   var rectIcon =  this.shadowRoot.querySelector('#rectSel');
-   rectIcon.style.cssText = "background-color: #555;"
-
-   var arrowIcon =  this.shadowRoot.querySelector('#arrowSel');
-   arrowIcon.style.cssText = "background-color: #555;"
-
+   this.makeIconNeutral();
    var switchIcon =  this.shadowRoot.querySelector('#switchSel');
    switchIcon.style.cssText = "background-color:  #4CAF50;"
   }
-
   activateDelete(){
-
-   var rectIcon =  this.shadowRoot.querySelector('#rectSel');
-   rectIcon.style.cssText = "background-color: #555;"
-
-   var arrowIcon =  this.shadowRoot.querySelector('#arrowSel');
-   arrowIcon.style.cssText = "background-color: #555;"
-   
-   var switchIcon =  this.shadowRoot.querySelector('#switchSel');
-   switchIcon.style.cssText = "background-color:  #555;"
-
+  this.makeIconNeutral();
    var delIcon =  this.shadowRoot.querySelector('#delIcon');
    delIcon.style.cssText = "background-color: #4CAF50;"
   }
