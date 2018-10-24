@@ -38,15 +38,11 @@ class PaintPractice extends PolymerElement {
             color: white; 
             font-size: 35px;
           }
-
-  
           
         </style>
 
   
        <canvas id="myCanvas" style="border:3px solid black";></canvas>
-    
-     
 
        <div class = "icon-bar" >
           <a  href="#" title = "Create Square" id="rectSel" style= "background-color:#555" on-click= "activateAndSelectSquare"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
@@ -84,6 +80,10 @@ class PaintPractice extends PolymerElement {
     }
   }
 
+  makeIconActive(icon){
+    icon.style.cssText = "background-color: #4CAF50;"
+  }
+
   activateAndSelectSquare(){
     this.activateSquare();
     this.rectToolSelected();
@@ -103,24 +103,20 @@ class PaintPractice extends PolymerElement {
   }
   activateSquare(){
    this.makeIconNeutral();
-   var rectIcon =  this.shadowRoot.querySelector('#rectSel');
-   rectIcon.style.cssText = "background-color: #4CAF50;"
+   this.makeIconActive(this.shadowRoot.querySelector('#rectSel'));
   }
 
   activateArrow(){
    this.makeIconNeutral();
-   var arrowIcon =  this.shadowRoot.querySelector('#arrowSel');
-   arrowIcon.style.cssText = "background-color: #4CAF50;"
+   this.makeIconActive(this.shadowRoot.querySelector('#arrowSel'))
   }
   activateSwitch(){ 
    this.makeIconNeutral();
-   var switchIcon =  this.shadowRoot.querySelector('#switchSel');
-   switchIcon.style.cssText = "background-color:  #4CAF50;"
+   this.makeIconActive(this.shadowRoot.querySelector('#switchSel'))
   }
   activateDelete(){
   this.makeIconNeutral();
-   var delIcon =  this.shadowRoot.querySelector('#delIcon');
-   delIcon.style.cssText = "background-color: #4CAF50;"
+  this.makeIconActive(this.shadowRoot.querySelector('#delIcon'));
   }
 
   deleteListener(e){
