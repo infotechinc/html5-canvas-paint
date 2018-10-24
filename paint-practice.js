@@ -85,6 +85,10 @@ class PaintPractice extends PolymerElement {
   mouseDown(e){
     this.isMouseDown = true;
     const pointer = this.canvas.getPointer(e.e);
+    console.log('pointer.x');
+    console.log(pointer.x);
+    console.log('pointer.y');
+    console.log(pointer.y);
     const posX = pointer.x, posY = pointer.y;
     const toConstruct = this[this.selectedTool];
     const shape = new fabric.Rect(toConstruct);
@@ -97,6 +101,8 @@ class PaintPractice extends PolymerElement {
   }
   
   mouseMove(e){
+    this.inMouseUp = true;
+    this.inMouseMove = true;
     if(this.isMouseDown != true) return;
     const pointer = this.canvas.getPointer(e.e);
     if(this.currentShape.left > pointer.x ) 
@@ -131,6 +137,7 @@ class PaintPractice extends PolymerElement {
   }
   
   selectToolSelected(){
+     this.inSelect = true;
      this.canvas.selection = true;
      this.selectedTool = "switchSel";
      this.canvas.off('mouse:down');

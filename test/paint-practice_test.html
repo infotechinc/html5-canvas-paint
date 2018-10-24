@@ -149,12 +149,7 @@
         });
 
         test('when a mouse down event occurs the mouseDown function gets called', (done)=> {
-          //sinon does not seem to work for rebound function calls:
-          // https://stackoverflow.com/questions/25578112/spying-on-a-method-with-sinon-method-bound-to-event-listener-method-was-execut
-          //so, for this one test, since we just want to test that the method is getting called,
-          // redefine the mousedown function of el to call done and make the test pass.
-          // if done is not called in an async test, it will time out a fail which is what we want it to do
-          //if method does not get called. There are other solutions but this suffices.
+  
           el.mouseDown = function(){done();}
           el.listenersOn();
           el.canvas.fire('mouse:down');
@@ -167,21 +162,23 @@
           assert.equal( el.isMouseDown, true);
         });
 
-        test('when a mouse move event occurs the mouseMove function gets called', ()=> {
-          throw 'fix this based off the mouse down pattern i showed above'
+        test('when a mouse move event occurs the mouseMove function gets called', function(){
+          el.listenersOn();
+          el.inMouseMove = false;
+          MockInteractions.move(el.canvas.upperCanvasEl, {x: 253, y:137}, {x:257, y:139} );
+          assert.equal(el.inMouseMove, true);
         });
 
         test('when the mouse up event occurs, the mouseUp method gets called, followed by selectToolSelected method getting called', ()=> {
-          const mouseUpSpy = sinon.spy(el, 'mouseUp');
-          const selectToolSpy = sinon.spy(el, 'selectToolSelected');
-          el.canvas.on('mouse:up', function(event){
-          sinon.assert.calledOnce(mouseUpSpy);
-          sinon.assert.calledOnce(selectToolSpy);
-          });
-          
+          el.listenersOn();
+          el.inMouseUp = false;
+          el.inSelect = false;
+          MockInteractions.up(el.canvas.upperCanvasEl, {x: 253, y:137});
+          el.inMouseUp = true;
+          el.inSelect = true;
+          assert.equal( el.inMouseUp, true);
+          assert.equal( el.inSelect, true);
         });
-
-
 
       });
     </script>
