@@ -1,5 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-icons/iron-icons.js';
+
 import {injectShapes} from './injectShapes.js';
 
 /**
@@ -14,11 +15,9 @@ class PaintPractice extends PolymerElement {
     return html`
 
         <style> 
-
           .myCanvas{
             margin-left: 20px;
           }
-
           .icon-bar {
             width: 120px;
             margin-top: 17px;
@@ -27,28 +26,24 @@ class PaintPractice extends PolymerElement {
             background-color: #555;
             overflow: auto
           }
-          .icon-bar a:hover {
-            background-color: #4CAF50;
-          }
           .icon-bar a {
             float: left; 
             text-align: center;
             width: 25%;
             color: white; 
             font-size: 35px;
+          }  
+          .icon-bar a:hover {
+            background-color: #4CAF50;
           }
-
-
           
+              
         </style>
 
-  
        <canvas id="myCanvas" style="border:3px solid black";></canvas>
-    
-     
 
        <div class = "icon-bar" >
-          <a class="active" href="#" title = "Create Square" id="rectSel" on-click= "rectToolSelected"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
+          <a href="#" href="#" title = "Create Square" id="rectSel" on-click= "rectToolSelected"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
           <a href="#" id="arrowSel"  title = "Create Arrow" on-click= "arrowToolSelected">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
           <a href="#" id="switchSel" title = "Switch Tools" on-click= "selectToolSelected">  <iron-icon style = "color: white" icon = "swap-horiz" ></iron-icon> </a>
           <a href = "#" id = "delIcon" title = "Delete" on-click = "deleteSquare"> <iron-icon style = "color:white" icon = "delete"></iron-icon></a>
@@ -64,8 +59,6 @@ class PaintPractice extends PolymerElement {
       }
     };
   }
-
- 
 
   ready(){
     super.ready();
@@ -92,8 +85,11 @@ class PaintPractice extends PolymerElement {
   mouseDown(e){
     this.isMouseDown = true;
     const pointer = this.canvas.getPointer(e.e);
-    const posX = pointer.x;
-    const posY = pointer.y;
+    console.log('pointer.x');
+    console.log(pointer.x);
+    console.log('pointer.y');
+    console.log(pointer.y);
+    const posX = pointer.x, posY = pointer.y;
     const toConstruct = this[this.selectedTool];
     const shape = new fabric.Rect(toConstruct);
     shape.left = posX;
@@ -105,14 +101,15 @@ class PaintPractice extends PolymerElement {
   }
   
   mouseMove(e){
+    this.inMouseUp = true;
+    this.inMouseMove = true;
     if(this.isMouseDown != true) return;
     const pointer = this.canvas.getPointer(e.e);
     if(this.currentShape.left > pointer.x ) 
     this.currentShape.left = pointer.x;
     if(this.currentShape.top >pointer.y) 
     this.currentShape.top = pointer.y;
-    const width = (Math.abs(pointer.x - this.downX));
-    const height = (Math.abs(pointer.y -this.downY));
+    const width = (Math.abs(pointer.x - this.downX)), height = (Math.abs(pointer.y -this.downY));
     this.currentShape.set({width: width, height: height});
     this.currentShape.setCoords();
     this.canvas.renderAll();
@@ -125,26 +122,25 @@ class PaintPractice extends PolymerElement {
   }
   
   rectToolSelected(){
-    //I want to turn the listeners back on when user clicks the rectangle tool
-    this.selectedTool = 'rectangle';
-    this.canvas.selection = false;
-    this.listenersOn();
-    this.canvas.renderAll();
+     this.selectedTool = 'rectangle';
+     this.canvas.selection = false;
+     this.listenersOn();
+     this.canvas.renderAll();
   }
 
   arrowToolSelected(){
      this.canvas.selection = false;
      this.selectedTool = 'arrow';
      this.listenersOn();
-
      new fabric.Path(this.arrow); 
      this.canvas.renderAll();
   }
   
   selectToolSelected(){
-    this.canvas.selection = true;
-    this.selectedTool = "switchSel";
-    this.canvas.off('mouse:down');
+     this.inSelect = true;
+     this.canvas.selection = true;
+     this.selectedTool = "switchSel";
+     this.canvas.off('mouse:down');
   }
   
   addSquare(e){
