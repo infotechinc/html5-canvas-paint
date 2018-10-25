@@ -11,6 +11,8 @@
 
     <script type="module" src="../paint-practice.js"></script>
     <script src='../demo/fabric.js'></script>
+    <script src='../demo/mock-interactions.js' type="module"></script>
+
   </head>
   <body>
 
@@ -71,7 +73,7 @@
           const addArrowSpy = sinon.spy(el, 'arrowToolSelected');
           arrowClickIcon.click();
           sinon.assert.calledOnce(addArrowSpy);
-          assert(el.selectedTool == 'arrow');
+          assert.equal(el.selectedTool, 'arrow');
         });
 
         test('rectToolSelected changes selected tool to rectangle', ()=> {
@@ -132,19 +134,51 @@
           assert.equal(el.canvas.size(), 1);
         });
 
-        test.skip('rectangles can be added when selecting the rectangle icon after selecting the setSelectionTool icon', ()=> {
-
-          assert.equal(el.canvas.size(), 0);
-          const switchClickIcon = shadow.querySelector('#switchSel');
-          const switchSpy = sinon.spy(el, 'setSelectionTool');
-          switchClickIcon.click();
-          //I want to do mouse down here and simulate the user dragging a square but I dont know how i'd do that
-          const rectangleClickIcon = shadow.querySelector('#rectSel');
-          const addRectangleSpy = sinon.spy(el, 'rectToolSelected');
-          
-
+        test('when rectToolSelected is called, the listenersOn method is called ', ()=> {
+           const rectangleClickIcon = shadow.querySelector('#rectSel');
+           const listenersOnSpy = sinon.spy(el, 'listenersOn');
+           rectangleClickIcon.click();
+           sinon.assert.calledOnce(listenersOnSpy);  
         });
 
+        test('when arrowToolSelected is called, the listenersOn method is called ', ()=> {
+           const arrowClickIcon = shadow.querySelector('#arrowSel');
+           const listenersOnSpy = sinon.spy(el, 'listenersOn');
+           arrowClickIcon.click();
+           sinon.assert.calledOnce(listenersOnSpy);
+        });
+
+        test('when a mouse down event occurs the mouseDown function gets called', (done)=> {
+  
+          el.mouseDown = function(){done();}
+          el.listenersOn();
+          el.canvas.fire('mouse:down');
+        });
+
+        test('when a mouse down event occurs the isMouseDown variable is set to true', function() {
+          el.listenersOn();
+          el.isMouseDown = false;
+          MockInteractions.down(el.canvas.upperCanvasEl);
+          assert.equal( el.isMouseDown, true);
+        });
+
+        test('when a mouse move event occurs the mouseMove function gets called', function(){
+          el.listenersOn();
+          el.inMouseMove = false;
+          MockInteractions.move(el.canvas.upperCanvasEl, {x: 253, y:137}, {x:257, y:139} );
+          assert.equal(el.inMouseMove, true);
+        });
+
+        test('when the mouse up event occurs, the mouseUp method gets called, followed by selectToolSelected method getting called', ()=> {
+          el.listenersOn();
+          el.inMouseUp = false;
+          el.inSelect = false;
+          MockInteractions.up(el.canvas.upperCanvasEl, {x: 253, y:137});
+          el.inMouseUp = true;
+          el.inSelect = true;
+          assert.equal( el.inMouseUp, true);
+          assert.equal( el.inSelect, true);
+        });
 
       });
     </script>
