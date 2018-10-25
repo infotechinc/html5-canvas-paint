@@ -3,6 +3,7 @@ import '@polymer/iron-icons/iron-icons.js';
 
 import {injectShapes} from './injectShapes.js';
 
+
 /**
  * `paint-practice`
  *
@@ -23,7 +24,7 @@ class PaintPractice extends PolymerElement {
             margin-top: 17px;
             margin-left: auto;
             margin-right: auto; 
-            background-color: #555;
+            
             overflow: auto
           }
           .icon-bar a {
@@ -43,10 +44,10 @@ class PaintPractice extends PolymerElement {
        <canvas id="myCanvas" style="border:3px solid black";></canvas>
 
        <div class = "icon-bar" >
-          <a href="#" href="#" title = "Create Square" id="rectSel" on-click= "rectToolSelected"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
-          <a href="#" id="arrowSel"  title = "Create Arrow" on-click= "arrowToolSelected">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
-          <a href="#" id="switchSel" title = "Switch Tools" on-click= "selectToolSelected">  <iron-icon style = "color: white" icon = "swap-horiz" ></iron-icon> </a>
-          <a href = "#" id = "delIcon" title = "Delete" on-click = "deleteSquare"> <iron-icon style = "color:white" icon = "delete"></iron-icon></a>
+          <a  href="#" title = "Create Square" id="rectSel" style= "background-color:#555" on-click= "activateAndSelectSquare"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
+          <a href="#" id="arrowSel"  title = "Create Arrow" style= "background-color:#555" on-click= "activateAndSelectArrow">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
+          <a href="#" id="switchSel" title = "Switch Tools" style= "background-color:#555" on-click= "activateAndSelectSwitch" >  <iron-icon style = "color: white" icon = "swap-horiz" ></iron-icon> </a>
+          <a href = "#" id = "delIcon" title = "Delete" style= "background-color:#555" on-click= "activateAndSelectDelete"> <iron-icon style = "color:white" icon = "delete"></iron-icon></a>
        </div>
        
     `;
@@ -65,7 +66,56 @@ class PaintPractice extends PolymerElement {
     const canvas = this.shadowRoot.querySelector('canvas');
     injectShapes(this);
     this.canvas = new fabric.Canvas(canvas, {width: 500, height: 500});
-    this.canvas.renderAll();  
+    this.canvas.renderAll(); 
+
+  }
+  
+  makeIconNeutral(){
+    var icons = [ this.shadowRoot.querySelector('#switchSel'),  this.shadowRoot.querySelector('#delIcon'),
+    this.shadowRoot.querySelector('#arrowSel'), this.shadowRoot.querySelector('#rectSel') ];
+    var x;
+    for( x in icons){
+      icons[x].style.cssText = "background-color:  #555;"
+    }
+  }
+
+  makeIconActive(icon){
+    icon.style.cssText = "background-color: #4CAF50;"
+  }
+
+  activateAndSelectSquare(){
+    this.activateSquare();
+    this.rectToolSelected();
+  }
+
+  activateAndSelectArrow(){
+    this.activateArrow();
+    this.arrowToolSelected();
+  }
+  activateAndSelectSwitch(){
+    this.activateSwitch();
+    this.selectToolSelected();
+  }
+  activateAndSelectDelete(){
+    this.activateDelete();
+    this.deleteSquare();
+  }
+  activateSquare(){
+   this.makeIconNeutral();
+   this.makeIconActive(this.shadowRoot.querySelector('#rectSel'));
+  }
+
+  activateArrow(){
+   this.makeIconNeutral();
+   this.makeIconActive(this.shadowRoot.querySelector('#arrowSel'))
+  }
+  activateSwitch(){ 
+   this.makeIconNeutral();
+   this.makeIconActive(this.shadowRoot.querySelector('#switchSel'))
+  }
+  activateDelete(){
+  this.makeIconNeutral();
+  this.makeIconActive(this.shadowRoot.querySelector('#delIcon'));
   }
 
   deleteListener(e){
