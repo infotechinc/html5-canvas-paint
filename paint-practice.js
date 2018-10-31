@@ -67,7 +67,6 @@ class PaintPractice extends PolymerElement {
     injectShapes(this);
     this.canvas = new fabric.Canvas(canvas, {width: 500, height: 500});
     this.canvas.renderAll(); 
-
   }
   
   makeIconNeutral(){
@@ -118,34 +117,26 @@ class PaintPractice extends PolymerElement {
   this.makeIconActive(this.shadowRoot.querySelector('#delIcon'));
   }
 
-  deleteListener(e){
-    const key = e.keyCode;
-    if(key == '8'){
-      this.canvas.remove(this.canvas.getActiveObject());
-    }
-  }
-
   listenersOn(){
     this.canvas.on('mouse:down', this.mouseDown.bind(this));
     this.canvas.on('mouse:move', this.mouseMove.bind(this));
     this.canvas.on('mouse:up', this.mouseUp.bind(this));
     document.body.addEventListener('keydown', this.deleteListener.bind(this), false);
   }
+
+  deleteListener(e){
+    const key = e.keyCode;
+    if(key == '8'){
+      this.canvas.remove(this.canvas.getActiveObject());
+    }
+  }
   
   mouseDown(e){
     this.isMouseDown = true;
     const pointer = this.canvas.getPointer(e.e);
-    console.log('pointer.x');
-    console.log(pointer.x);
-    console.log('pointer.y');
-    console.log(pointer.y);
-    const posX = pointer.x, posY = pointer.y;
-    const toConstruct = this[this.selectedTool];
-    const shape = new fabric.Rect(toConstruct);
-    shape.left = posX;
-    shape.top = posY;
-    this.currentShape = shape;
+    const shape =this[this.selectedTool].getShapeAtPointer(pointer)
     this.canvas.add(shape);
+    this.currentShape = shape;
     this.downX = shape.left;
     this.downY = shape.top;
   }
@@ -154,14 +145,10 @@ class PaintPractice extends PolymerElement {
     this.inMouseUp = true;
     this.inMouseMove = true;
     if(this.isMouseDown != true) return;
+
     const pointer = this.canvas.getPointer(e.e);
-    if(this.currentShape.left > pointer.x ) 
-    this.currentShape.left = pointer.x;
-    if(this.currentShape.top >pointer.y) 
-    this.currentShape.top = pointer.y;
-    const width = (Math.abs(pointer.x - this.downX)), height = (Math.abs(pointer.y -this.downY));
-    this.currentShape.set({width: width, height: height});
-    this.currentShape.setCoords();
+    const currentShape = this.currentShape;
+    this[this.selectedTool].mouseMove(pointer, currentShape, this.downX, this.downY);
     this.canvas.renderAll();
   }
 
@@ -182,8 +169,8 @@ class PaintPractice extends PolymerElement {
      this.canvas.selection = false;
      this.selectedTool = 'arrow';
      this.listenersOn();
-     new fabric.Path(this.arrow); 
      this.canvas.renderAll();
+
   }
   
   selectToolSelected(){

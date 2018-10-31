@@ -173,6 +173,8 @@
           el.listenersOn();
           el.inMouseUp = false;
           el.inSelect = false;
+          const bound = el.canvas.getBoundingClientRect();
+          const toTapX = bound.width/2, topTapY =
           MockInteractions.up(el.canvas.upperCanvasEl, {x: 253, y:137});
           el.inMouseUp = true;
           el.inSelect = true;
