@@ -16,9 +16,9 @@ const injectShapes = function(injectionTarget){
     },
     mouseMove: function(pointer, currentShape, downX, downY){
       
-      if(currentShape.left > pointer.x ) 
+      if(currentShape.left > pointer.x) 
       currentShape.left = pointer.x;
-      if(currentShape.top >pointer.y) 
+      if(currentShape.top > pointer.y) 
       currentShape.top = pointer.y;
 
       const width = (Math.abs(pointer.x - downX)), 
@@ -45,23 +45,28 @@ const injectShapes = function(injectionTarget){
        strokeWidth: 5,
        fill: false
       });
-     console.log(path);
       path.left = posX;
       path.top = posY;
       return path;
     },
     
     mouseMove: function(pointer, currentShape, downX, downY){
-    
-      if(currentShape.left > pointer.x ) 
-      currentShape.left = pointer.x;
-      if(currentShape.top >pointer.y) 
-      currentShape.top = pointer.y;
 
-      const width = (Math.abs(pointer.x - downX)), 
-      height = (Math.abs(pointer.y - downY));
-      currentShape.set({width: width, height: height});
+      //pointer is the moving cursor coordinates
+      //currentShape is static coordinates
+
+      const deltaX = (pointer.x - downX);
+      const deltaY = (pointer.y - downY);
+      const angle = Math.atan2(deltaY, deltaX) *180/ Math.PI;
+     
+      const width = Math.sqrt( ( Math.pow(deltaX,2) + Math.pow(deltaY,2) ) );
+
+      const height = currentShape.height;
+      currentShape.set({ width: width , height: height});
+     
+      currentShape.rotate(angle);
       currentShape.setCoords();
+     
     }
   }
 }
