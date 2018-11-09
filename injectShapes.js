@@ -14,17 +14,18 @@ const injectShapes = function(injectionTarget){
       shape.top = posY;
       return shape;
     },
-    mouseMove: function(pointer, currentShape, downX, downY){
-      
-      if(currentShape.left > pointer.x) 
-      currentShape.left = pointer.x;
-      if(currentShape.top > pointer.y) 
-      currentShape.top = pointer.y;
+
+    mouseMove: function(that, pointer){
+     
+      if(this.currentShape.left > pointer.x) 
+      this.currentShape.left = pointer.x;
+      if(this.currentShape.top > pointer.y) 
+      this.currentShape.top = pointer.y;
 
       const width = (Math.abs(pointer.x - downX)), 
       height = (Math.abs(pointer.y - downY));
-      currentShape.set({width: width, height: height});
-      currentShape.setCoords();
+      this.currentShape.set({width: width, height: height});
+      this.currentShape.setCoords();
     }
   }
 
@@ -50,22 +51,25 @@ const injectShapes = function(injectionTarget){
       return path;
     },
     
-    mouseMove: function(pointer, currentShape, downX, downY){
+    mouseMove: function(that, pointer){
 
       //pointer is the moving cursor coordinates
       //currentShape is static coordinates
+      this.currentShape.originX = currentShape.oCoords.bl;
+      this.currentShape.originY = currentShape.oCoords.tl;
 
       const deltaX = (pointer.x - downX);
       const deltaY = (pointer.y - downY);
       const angle = Math.atan2(deltaY, deltaX) *180/ Math.PI;
      
-      const width = Math.sqrt( ( Math.pow(deltaX,2) + Math.pow(deltaY,2) ) );
+      const width2 = Math.sqrt( ( Math.pow(deltaX,2) + Math.pow(deltaY,2) ) );
+      const height1 = this.currentShape.height;
+      const width1 = this.currentShape.width;
 
-      const height = currentShape.height;
-      currentShape.set({ width: width , height: height});
+      this.currentShape.scaleX = width2/width1;
      
-      currentShape.rotate(angle);
-      currentShape.setCoords();
+      this.currentShape.rotate(angle);
+      this.currentShape.setCoords();
      
     }
   }

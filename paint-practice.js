@@ -145,10 +145,10 @@ class PaintPractice extends PolymerElement {
     this.inMouseUp = true;
     this.inMouseMove = true;
     if(this.isMouseDown != true) return;
-
+    const that = this;
     const pointer = this.canvas.getPointer(e.e);
     const currentShape = this.currentShape;
-    this[this.selectedTool].mouseMove(pointer, currentShape, this.downX, this.downY);
+    this[this.selectedTool].mouseMove( that , pointer);
     this.canvas.renderAll();
   }
 
