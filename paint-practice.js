@@ -66,7 +66,13 @@ class PaintPractice extends PolymerElement {
     const canvas = this.shadowRoot.querySelector('canvas');
     injectShapes(this);
     this.canvas = new fabric.Canvas(canvas, {width: 500, height: 500});
-    this.canvas.renderAll(); 
+    const path = './shapesToLoad.json';
+    fetch(path).then(function(r){
+      return r.json();
+    }).then(function(r){
+      this.canvas.loadFromJSON(r);
+      this.canvas.renderAll();
+    }.bind(this));
   }
   
   makeIconNeutral(){
@@ -134,7 +140,7 @@ class PaintPractice extends PolymerElement {
   mouseDown(e){
     this.isMouseDown = true;
     const pointer = this.canvas.getPointer(e.e);
-    const shape =this[this.selectedTool].getShapeAtPointer(pointer)
+    const shape =this[this.selectedTool].getShapeAtPointer(this, pointer)
     this.canvas.add(shape);
     this.currentShape = shape;
     this.downX = shape.left;
@@ -145,10 +151,10 @@ class PaintPractice extends PolymerElement {
     this.inMouseUp = true;
     this.inMouseMove = true;
     if(this.isMouseDown != true) return;
-    const that = this;
+    
     const pointer = this.canvas.getPointer(e.e);
     const currentShape = this.currentShape;
-    this[this.selectedTool].mouseMove( that , pointer);
+    this[this.selectedTool].mouseMove( this , pointer);
     this.canvas.renderAll();
   }
 
