@@ -5,27 +5,27 @@ const injectShapes = function(injectionTarget){
     width: 50,
     height: 50,
     fill: 'red',
-    getShapeAtPointer: function(pointer){
+    getShapeAtPointer: function(paint, pointer){
     
       const posX = pointer.x, posY = pointer.y;
-      const toConstruct = this[this.selectedTool];
+      const toConstruct = paint[paint.selectedTool];
       const shape = new fabric.Rect(toConstruct);
       shape.left = posX;
       shape.top = posY;
       return shape;
     },
 
-    mouseMove: function(that, pointer){
-     
-      if(this.currentShape.left > pointer.x) 
-      this.currentShape.left = pointer.x;
-      if(this.currentShape.top > pointer.y) 
-      this.currentShape.top = pointer.y;
+    mouseMove: function(paint, pointer){
+      
+      if(paint.currentShape.left > pointer.x) 
+      paint.currentShape.left = pointer.x;
+      if(paint.currentShape.top > pointer.y) 
+      paint.currentShape.top = pointer.y;
 
       const width = (Math.abs(pointer.x - downX)), 
       height = (Math.abs(pointer.y - downY));
-      this.currentShape.set({width: width, height: height});
-      this.currentShape.setCoords();
+      paint.currentShape.set({width: width, height: height});
+      paint.currentShape.setCoords();
     }
   }
 
@@ -37,7 +37,7 @@ const injectShapes = function(injectionTarget){
     fill: false,
     path: 'M0 0 L100.1 0 M 100 0 L75 20 M100 0 L75 -20',
 
-    getShapeAtPointer: function(pointer){
+    getShapeAtPointer: function(paint, pointer){
       const posX = pointer.x, posY = pointer.y;
       const path = new fabric.Path(injectionTarget.arrow.path, {
        left: 100,
@@ -51,25 +51,23 @@ const injectShapes = function(injectionTarget){
       return path;
     },
     
-    mouseMove: function(that, pointer){
+    mouseMove: function(paint, pointer){
 
-      //pointer is the moving cursor coordinates
-      //currentShape is static coordinates
-      this.currentShape.originX = currentShape.oCoords.bl;
-      this.currentShape.originY = currentShape.oCoords.tl;
+      paint.currentShape.originX = paint.currentShape.oCoords.bl;
+      paint.currentShape.originY = paint.currentShape.oCoords.tl;
 
-      const deltaX = (pointer.x - downX);
-      const deltaY = (pointer.y - downY);
+      const deltaX = (pointer.x - paint.downX);
+      const deltaY = (pointer.y - paint.downY);
       const angle = Math.atan2(deltaY, deltaX) *180/ Math.PI;
      
       const width2 = Math.sqrt( ( Math.pow(deltaX,2) + Math.pow(deltaY,2) ) );
-      const height1 = this.currentShape.height;
-      const width1 = this.currentShape.width;
+      const height1 = paint.currentShape.height;
+      const width1 = paint.currentShape.width;
 
-      this.currentShape.scaleX = width2/width1;
+      paint.currentShape.scaleX = width2/width1;
      
-      this.currentShape.rotate(angle);
-      this.currentShape.setCoords();
+      paint.currentShape.rotate(angle);
+      paint.currentShape.setCoords();
      
     }
   }
