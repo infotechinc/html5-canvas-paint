@@ -795,7 +795,6 @@ fabric.CommonMethods = {
      * A wrapper around Number#toFixed, which contrary to native method returns number, not string.
      * @static
      * @memberOf fabric.util
-     * @param {Number|String} number number to operate on
      * @param {Number} fractionDigits number of fraction digits to "leave"
      * @return {Number}
      */
@@ -24278,6 +24277,7 @@ fabric.Image.filters.BaseFilter.fromObject = function(object, callback) {
      * @return {fabric.Text} thisArg
      */
     initialize: function(text, options) {
+    
       this.styles = options ? (options.styles || { }) : { };
       this.text = text;
       this.__skipDimension = true;

@@ -6,7 +6,7 @@ const injectShapes = function(injectionTarget){
     height: 50,
     fill: 'red',
     getShapeAtPointer: function(paint, pointer){
-    
+         
       const posX = pointer.x, posY = pointer.y;
       const toConstruct = paint[paint.selectedTool];
       const shape = new fabric.Rect(toConstruct);
