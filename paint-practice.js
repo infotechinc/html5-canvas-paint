@@ -73,6 +73,7 @@ class PaintPractice extends PolymerElement {
       this.canvas.loadFromJSON(r);
       this.canvas.renderAll();
     }.bind(this));
+    
   }
   
   makeIconNeutral(){
@@ -83,6 +84,7 @@ class PaintPractice extends PolymerElement {
       icons[x].style.cssText = "background-color:  #555;"
     }
   }
+
 
   makeIconActive(icon){
     icon.style.cssText = "background-color: #4CAF50;"
@@ -136,12 +138,19 @@ class PaintPractice extends PolymerElement {
       this.canvas.remove(this.canvas.getActiveObject());
     }
   }
-  
+
   mouseDown(e){
     this.isMouseDown = true;
+    const ctx = this.canvas.getContext('2d');
     const pointer = this.canvas.getPointer(e.e);
-    const shape =this[this.selectedTool].getShapeAtPointer(this, pointer)
+    const shape = this[this.selectedTool].getShapeAtPointer(this, pointer)
     this.canvas.add(shape);
+    this.canvas.on('after:render', function(e){
+      ctx.fillStyle = 'blue';
+      ctx.font = "30px Arial";
+      ctx.fillText('hi',shape.left, shape.top);
+      ctx.restore();
+    });
     this.currentShape = shape;
     this.downX = shape.left;
     this.downY = shape.top;
@@ -154,7 +163,7 @@ class PaintPractice extends PolymerElement {
     
     const pointer = this.canvas.getPointer(e.e);
     const currentShape = this.currentShape;
-    this[this.selectedTool].mouseMove( this , pointer);
+    this[this.selectedTool].mouseMove(this , pointer);
     this.canvas.renderAll();
   }
 

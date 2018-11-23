@@ -6,10 +6,10 @@ const injectShapes = function(injectionTarget){
     height: 50,
     fill: 'red',
     getShapeAtPointer: function(paint, pointer){
-         
+
       const posX = pointer.x, posY = pointer.y;
       const toConstruct = paint[paint.selectedTool];
-      const shape = new fabric.Rect(toConstruct);
+      const shape = new fabric.Rect(toConstruct.properties);
       shape.left = posX;
       shape.top = posY;
       return shape;
@@ -22,8 +22,8 @@ const injectShapes = function(injectionTarget){
       if(paint.currentShape.top > pointer.y) 
       paint.currentShape.top = pointer.y;
 
-      const width = (Math.abs(pointer.x - downX)), 
-      height = (Math.abs(pointer.y - downY));
+      const width = (Math.abs(pointer.x - paint.downX)), 
+      height = (Math.abs(pointer.y - paint.downY));
       paint.currentShape.set({width: width, height: height});
       paint.currentShape.setCoords();
     }
@@ -38,6 +38,7 @@ const injectShapes = function(injectionTarget){
     path: 'M0 0 L100.1 0 M 100 0 L75 20 M100 0 L75 -20',
 
     getShapeAtPointer: function(paint, pointer){
+
       const posX = pointer.x, posY = pointer.y;
       const path = new fabric.Path(injectionTarget.arrow.path, {
        left: 100,
