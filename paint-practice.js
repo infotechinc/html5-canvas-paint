@@ -18,9 +18,10 @@ class PaintPractice extends PolymerElement {
         <style> 
           .myCanvas{
             margin-left: 20px;
+
           }
           .icon-bar {
-            width: 120px;
+            width: 130px;
             margin-top: 17px;
             margin-left: auto;
             margin-right: auto; 
@@ -33,9 +34,14 @@ class PaintPractice extends PolymerElement {
             width: 25%;
             color: white; 
             font-size: 35px;
+            margin-bottome: 0px;
           }  
           .icon-bar a:hover {
             background-color: #4CAF50;
+          }
+
+          #checkbox{
+            margin-top: 1px;
           }
           
               
@@ -43,13 +49,16 @@ class PaintPractice extends PolymerElement {
 
        <canvas id="myCanvas" style="border:3px solid black";></canvas>
 
+       
+       <div class = "tools">
        <div class = "icon-bar" >
           <a  href="#" title = "Create Square" id="rectSel" style= "background-color:#555" on-click= "activateAndSelectSquare"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
           <a href="#" id="arrowSel"  title = "Create Arrow" style= "background-color:#555" on-click= "activateAndSelectArrow">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
           <a href="#" id="switchSel" title = "Switch Tools" style= "background-color:#555" on-click= "activateAndSelectSwitch" >  <iron-icon style = "color: white" icon = "swap-horiz" ></iron-icon> </a>
           <a href = "#" id = "delIcon" title = "Delete" style= "background-color:#555" on-click= "activateAndSelectDelete"> <iron-icon style = "color:white" icon = "delete"></iron-icon></a>
        </div>
-       
+      <input type="checkbox" id= "checkBox" name="onInfo" on-click = "displayInfo"> Display user info
+       </div>
     `;
   }
   static get properties() {
@@ -73,7 +82,7 @@ class PaintPractice extends PolymerElement {
       this.canvas.loadFromJSON(r);
       this.canvas.renderAll();
     }.bind(this));
-    
+     const info = false;
   }
   
   makeIconNeutral(){
@@ -111,7 +120,6 @@ class PaintPractice extends PolymerElement {
    this.makeIconNeutral();
    this.makeIconActive(this.shadowRoot.querySelector('#rectSel'));
   }
-
   activateArrow(){
    this.makeIconNeutral();
    this.makeIconActive(this.shadowRoot.querySelector('#arrowSel'))
@@ -138,22 +146,46 @@ class PaintPractice extends PolymerElement {
       this.canvas.remove(this.canvas.getActiveObject());
     }
   }
+  displayInfo(){
+    const checkbox = this.shadowRoot.querySelector('#checkBox');
 
+    if(checkbox.checked == true){
+      this.canvas.on('after:render', this.infoOn.bind(this));
+    }
+    else{
+      this.canvas.off('after:render');
+      this.canvas.renderAll();
+    }
+
+  }
+  
   mouseDown(e){
     this.isMouseDown = true;
-    const ctx = this.canvas.getContext('2d');
+    
     const pointer = this.canvas.getPointer(e.e);
     const shape = this[this.selectedTool].getShapeAtPointer(this, pointer)
     this.canvas.add(shape);
-    this.canvas.on('after:render', function(e){
-      ctx.fillStyle = 'blue';
-      ctx.font = "30px Arial";
-      ctx.fillText('hi',shape.left, shape.top);
-      ctx.restore();
-    });
     this.currentShape = shape;
     this.downX = shape.left;
     this.downY = shape.top;
+  }
+
+  infoOn(e){
+    const elements = this.canvas.getObjects()
+    var x;
+    const ctx = this.canvas.getContext('2d');
+    const date = new Date();
+    const displayDate = date.getMonth()+' '+
+    date.getDate()+' '+date.getFullYear()+' '+date.getHours()+':'+date.getMinutes();
+
+    const name = 'Sydney';
+    var displayStr = name + ' ' + displayDate;
+
+    for(x in elements){
+      ctx.fillStyle = 'black';
+      ctx.font = "10px Arial";
+      ctx.fillText(displayStr, elements[x].left, (elements[x].top -2));
+    }
   }
   
   mouseMove(e){
