@@ -16,17 +16,17 @@ class PaintPractice extends PolymerElement {
     return html`
 
         <style> 
+    
           .myCanvas{
             margin-left: 20px;
+            margin-top:0px;
 
           }
           .icon-bar {
             width: 130px;
-            margin-top: 17px;
+            margin-top: 0px;
             margin-left: auto;
-            margin-right: auto; 
-            
-            overflow: auto
+                        overflow: auto
           }
           .icon-bar a {
             float: left; 
@@ -39,26 +39,65 @@ class PaintPractice extends PolymerElement {
           .icon-bar a:hover {
             background-color: #4CAF50;
           }
+          h3, h1 {
+            display:inline;
+          }
 
           #checkbox{
             margin-top: 1px;
+          } 
+          h3{
+            font-size: 15px;
+          }  
+          h1{
+            font-size:15px;
+          } 
+          h4{
+            font-size:15px;
+          }  
+          h4, #file{
+            display: inline;
+          } 
+          .colorSel{
+            margin-top:0px;
+          } 
+          .fileUpld{
+            margin-top: 5px;
           }
-          
-              
+          #checkBox{
+            margin-top: 7px;
+          }
+          #dropdown{
+            margin-left: 2px;
+          }
         </style>
 
-       <canvas id="myCanvas" style="border:3px solid black";></canvas>
+      <canvas id="myCanvas" ></canvas>
 
+      <div class = "icon-bar" >
+          <a  href="#" title = "Create Square" id="rectSel" style= "background-color: black" on-click= "activateAndSelectSquare"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
+          <a href="#" id="arrowSel"  title = "Create Arrow" style= "background-color: black" on-click= "activateAndSelectArrow">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
+          <a href="#" id="switchSel" title = "Switch Tools" style= "background-color: black" on-click= "activateAndSelectSwitch" >  <iron-icon style = "color: white" icon = "swap-horiz" ></iron-icon> </a>
+          <a href = "#" id = "delIcon" title = "Delete" style= "background-color: black" on-click= "activateAndSelectDelete"> <iron-icon style = "color:white" icon = "delete"></iron-icon></a>
+       </div>
+
+      <div class = "colorSel">
+        <h3>Currently drawing in </h3> <h1> <h1>
+        <select on-change = "updateColor" id= "dropdown" name="colors">
+          <option value="blue">Blue</option>
+          <option value="red">Red</option>
+          <option value="green">Green</option>
+          <option value="purple">Purple</option>
+        </select>
+      </div> 
+
+      <div class = "fileUpld">
+        <h4>Upload an image to canvas</h4>
+        <input type="file" id="file" on-change = "userUpload"><br />
+      </div>
+
+      <h3> Display user info </h3><input type="checkbox" id= "checkBox" name="onInfo" on-click = "displayInfo">
        
-       <div class = "tools">
-       <div class = "icon-bar" >
-          <a  href="#" title = "Create Square" id="rectSel" style= "background-color:#555" on-click= "activateAndSelectSquare"><iron-icon  style = "color: white" icon = "check-box-outline-blank" ></iron-icon></a>
-          <a href="#" id="arrowSel"  title = "Create Arrow" style= "background-color:#555" on-click= "activateAndSelectArrow">  <iron-icon style = "color: white" icon = "arrow-forward"></iron-icon> </a>
-          <a href="#" id="switchSel" title = "Switch Tools" style= "background-color:#555" on-click= "activateAndSelectSwitch" >  <iron-icon style = "color: white" icon = "swap-horiz" ></iron-icon> </a>
-          <a href = "#" id = "delIcon" title = "Delete" style= "background-color:#555" on-click= "activateAndSelectDelete"> <iron-icon style = "color:white" icon = "delete"></iron-icon></a>
-       </div>
-      <input type="checkbox" id= "checkBox" name="onInfo" on-click = "displayInfo"> Display user info
-       </div>
     `;
   }
   static get properties() {
@@ -74,6 +113,7 @@ class PaintPractice extends PolymerElement {
     super.ready();
     const canvas = this.shadowRoot.querySelector('canvas');
     injectShapes(this);
+    var self = this;
     this.canvas = new fabric.Canvas(canvas, {width: 500, height: 500});
     const path = './shapesToLoad.json';
     fetch(path).then(function(r){
@@ -82,7 +122,10 @@ class PaintPractice extends PolymerElement {
       this.canvas.loadFromJSON(r);
       this.canvas.renderAll();
     }.bind(this));
-     const info = false;
+
+    this.updateColor();
+
+   
   }
   
   makeIconNeutral(){
@@ -90,13 +133,18 @@ class PaintPractice extends PolymerElement {
     this.shadowRoot.querySelector('#arrowSel'), this.shadowRoot.querySelector('#rectSel') ];
     var x;
     for( x in icons){
-      icons[x].style.cssText = "background-color:  #555;"
+      icons[x].style.cssText = "background-color:  black;"
     }
   }
 
-
+  updateColor(){
+    const color = this.shadowRoot.querySelector('#dropdown').value;
+    const h1 = this.shadowRoot.querySelector('h1');
+    h1.innerHTML = color.toUpperCase();
+    h1.style.color = color;
+  }
   makeIconActive(icon){
-    icon.style.cssText = "background-color: #4CAF50;"
+    icon.style.cssText = "background-color: blue;"
   }
 
   activateAndSelectSquare(){
@@ -151,6 +199,7 @@ class PaintPractice extends PolymerElement {
 
     if(checkbox.checked == true){
       this.canvas.on('after:render', this.infoOn.bind(this));
+      this.canvas.renderAll();
     }
     else{
       this.canvas.off('after:render');
@@ -158,12 +207,65 @@ class PaintPractice extends PolymerElement {
     }
 
   }
+  userUpload(e){
+    const self = this;
+    var file = e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function(f) {
+      var data = f.target.result;
+      fabric.Image.fromURL(data, function(img) {
+        console.log(self.canvas.width);
+        if(img.width >=500 ||img.height >= 500){
+          img.set({
+            scaleX: .1,
+            scaleY: .1
+          })
+          self.canvas.add(img);
+          self.canvas.setActiveObject(img);
+
+        }
+        else{
+          self.canvas.add(img.set({ 
+          left: 80, top: 95}));
+          self.canvas.setActiveObject(img);
+        }   
+      });
+    };
+    reader.readAsDataURL(file);
+    
+
+  }
+  uploadImg(){
+    
+    var imgURL = 'testImg.jpg';
+    var myImg = new Image();
+    const self = this;
+    myImg.onload = function (img) {    
+    var img = new fabric.Image(myImg, {
+       
+        left: 100,
+        top: 80,
+        scaleX: self.canvas.width/img.width,
+        scaleY: self.canvas.height/img.height
+    });
+    
+    self.canvas.add(img);
+    };
+    myImg.src = imgURL;
   
+
+  }
+
   mouseDown(e){
     this.isMouseDown = true;
+
+    const color = this.shadowRoot.querySelector('#dropdown').value;
+    console.log(color);
     
     const pointer = this.canvas.getPointer(e.e);
-    const shape = this[this.selectedTool].getShapeAtPointer(this, pointer)
+    const shape = this[this.selectedTool].getShapeAtPointer(this, pointer);
+    shape.set("fill", color);
+    shape.set("stroke", color);
     this.canvas.add(shape);
     this.currentShape = shape;
     this.downX = shape.left;
@@ -171,21 +273,24 @@ class PaintPractice extends PolymerElement {
   }
 
   infoOn(e){
-    const elements = this.canvas.getObjects()
+    const elements = this.canvas.getObjects();
     var x;
     const ctx = this.canvas.getContext('2d');
     const date = new Date();
-    const displayDate = date.getMonth()+' '+
-    date.getDate()+' '+date.getFullYear()+' '+date.getHours()+':'+date.getMinutes();
-
+    var displayDate;
     const name = 'Sydney';
-    var displayStr = name + ' ' + displayDate;
-
+    
+    //date.getMonth()+' '+ date.getDate()+' '+date.getFullYear()+' '+date.getHours()+':'+date.getMinutes()+ ' ' +date.getSeconds():
     for(x in elements){
+      console.log(this);
+      this.displayDate = this.displayDate ? this.displayDate : date.getMonth()+' '+ date.getDate()+' '+date.getFullYear()+' '+date.getHours()+':'+date.getMinutes();
+      
+      var displayStr = name + ' ' + this.displayDate;
       ctx.fillStyle = 'black';
-      ctx.font = "10px Arial";
+      ctx.font = "13px Arial";
       ctx.fillText(displayStr, elements[x].left, (elements[x].top -2));
     }
+   
   }
   
   mouseMove(e){

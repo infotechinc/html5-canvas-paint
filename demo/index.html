@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>paint-practice demo</title>
+    <title>demo</title>
 
     <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script src='fabric.js'></script>
@@ -30,9 +30,21 @@
       margin-right: auto;
       margin-bottom: 20px;
     }
+    body{
+        background-image: url("shapeOpacity1-2.png");
+      }
   </style>
     <div class="vertical-section-container centered"  >
       <h3>Create a Shape</h3>
+      <style type="text/css">
+      h3{
+        margin-top: 20px;
+        font-size: 85px;
+        color: white;
+        background-color: lightblue;
+        text-shadow: 5px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+      }
+      </style>
       <demo-snippet>
         <template>
           <paint-practice></paint-practice>
