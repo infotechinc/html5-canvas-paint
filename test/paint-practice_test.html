@@ -54,14 +54,16 @@
         });
 
          test.skip('deleting from delete key listener', () => {
+
           assert.equal(el.canvas.size(), 0);
           el.addSquare();
           assert.equal(el.canvas.size(), 1);
           const dltKeySpy = sinon.spy(el, 'deleteListener');
+
           el.canvas.on('keydown', function(event){
-          assert.equal(event.detail, 'delete');
-          assert.equal(el.canvas.size(), 0);
-          sinon.assert.calledOnce(dltKeySpy);
+            assert.equal(event.detail, 'delete');
+            assert.equal(el.canvas.size(), 0);
+            sinon.assert.calledOnce(dltKeySpy);
           });
           
           el.canvas.fire();

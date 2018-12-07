@@ -34,7 +34,7 @@ const injectShapes = function(injectionTarget){
     top: 100,
     stroke: 'black',
     strokeWidth: 5,
-    fill: false,
+    //fill: false,
     path: 'M0 0 L100.1 0 M 100 0 L75 20 M100 0 L75 -20',
 
     getShapeAtPointer: function(paint, pointer){
@@ -43,9 +43,9 @@ const injectShapes = function(injectionTarget){
       const path = new fabric.Path(injectionTarget.arrow.path, {
        left: 100,
        top: 100,
-       stroke: 'red',
+       //stroke: 'red',
        strokeWidth: 5,
-       fill: false
+       //fill: false
       });
       path.left = posX;
       path.top = posY;
